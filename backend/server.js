@@ -1,6 +1,6 @@
 // ########################################
 // ########## SETUP
-
+require('dotenv').config()
 const db = require('./database/db-connector');
 const express = require('express');
 const cors = require('cors');
@@ -9,39 +9,32 @@ const app = express();
 app.use(cors({ credentials: true, origin: "*" }));
 app.use(express.json());
 
-const PORT = 32851; // Replace with your chosen backend port
+ // Replace with your chosen backend port
+const PORT = 32849;
 
 // ########################################
 // ########## ROUTE HANDLERS
 
+
+// Simple test endpoint to check if everything is ok:
 app.get('/', (req, res) => {
-  res.send('Backend is working!!!! - Jesus and Julio');
+  res.send('Backend is finally working!!!! - Jesus and Julio');
 });
 
-// app.get('/bsg-people', async (req, res) => {
-//   try {
-//     const query1 = `
-//       SELECT bsg_people.id, bsg_people.fname, bsg_people.lname,
-//              bsg_planets.name AS homeworld, bsg_people.age
-//       FROM bsg_people
-//       LEFT JOIN bsg_planets ON bsg_people.homeworld = bsg_planets.id;`;
+// ########################################
+// ########## JOINING THE HELPER ROUTES INTO THE MAIN SERVER FILE
 
-//     const query2 = 'SELECT * FROM bsg_planets;';
-
-//     const [people] = await db.query(query1);
-//     const [homeworlds] = await db.query(query2);
-
-//     res.status(200).json({ people, homeworlds });
-
-//   } catch (error) {
-//     console.error("Error executing queries:", error);
-//     res.status(500).send("An error occurred while executing the database queries.");
-//   }
-// });
+app.use('/movies', require('./routes/movies'));
+app.use('/screenings', require('./routes/screenings'));
+app.use('/tickets', require('./routes/tickets'));
+app.use('/customers', require('./routes/customers'));
+app.use('/employees', require('./routes/employees'));
+app.use('/employeeRoles', require('./routes/employeeRoles'));
 
 // ########################################
 // ########## LISTENER
 
 app.listen(PORT, () => {
-  console.log(`Express started on http://classwork.engr.oregonstate.edu:${PORT}`);
+  console.log(`Express started on: http://classwork.engr.oregonstate.edu:${PORT}`);
 });
+
