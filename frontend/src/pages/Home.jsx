@@ -1,9 +1,9 @@
 function Home() {
   return (
     <>
-      <h1>Home Page</h1>
+      <h1>CinePictures</h1>
       <div className="homepageDescription">
-        <p>Jesus: Developer information and project overview here.</p>
+        <p>- Jesus and Julio</p>
       </div>
     </>
   );
