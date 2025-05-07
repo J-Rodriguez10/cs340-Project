@@ -13,7 +13,7 @@ import Customers from './pages/Customers';
 import Employees from './pages/Employees';
 import EmployeeRoles from './pages/EmployeeRoles';
 
-// Backend port (update this if different)
+// Backend port 
 const backendPort = 32849; // Replace with your actual backend port
 const backendURL = `http://classwork.engr.oregonstate.edu:${backendPort}`;
 
