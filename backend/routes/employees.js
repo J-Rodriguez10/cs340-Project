@@ -5,7 +5,17 @@ const router = express.Router();
 // GET /employees
 router.get('/', async (req, res) => {
   try {
-    const [rows] = await db.query('SELECT * FROM Employees;');
+    const [rows] = await db.query(`
+      SELECT 
+        e.employeeID,
+        e.firstName,
+        e.lastName,
+        e.email,
+        CONCAT(e.roleID, ' - ', r.roleName) AS roleInfo
+      FROM Employees e
+      JOIN EmployeeRoles r ON e.roleID = r.roleID
+      ORDER BY e.lastName;
+    `);
     res.json(rows);
   } catch (err) {
     console.error('GET /employees error:', err);
@@ -36,6 +46,7 @@ router.post('/', async (req, res) => {
     res.status(500).send('Error creating employee');
   }
 });
+
 
 // DELETE /employees/:id
 router.delete('/:id', async (req, res) => {

@@ -4,7 +4,7 @@ function Screenings() {
   return (
       <>
           <h1>Screenings</h1>
-          <div className="pageDescription">
+          <div className="">
               <p>Here you’ll see all scheduled screenings.</p>
               <GenericList endpoint="/screenings" title="Screenings" />
           </div>

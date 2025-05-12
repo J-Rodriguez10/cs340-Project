@@ -5,7 +5,19 @@ const router = express.Router();
 // GET /screenings
 router.get('/', async (req, res) => {
   try {
-    const [rows] = await db.query('SELECT * FROM Screenings;');
+    const [rows] = await db.query(`
+      SELECT 
+        s.screeningID,
+        s.startTime,
+        s.endTime,
+        s.screenNumber,
+        s.totalCapacity,
+        s.employeeID,
+        CONCAT(s.movieID, ' - ', m.title) AS movieInfo
+      FROM Screenings s
+      JOIN Movies m ON s.movieID = m.movieID
+      ORDER BY s.startTime;
+    `);
     res.json(rows);
   } catch (err) {
     console.error('GET /screenings error:', err);
