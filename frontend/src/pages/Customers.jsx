@@ -4,7 +4,7 @@ function Customers() {
   return (
       <>
           <h1>Customers</h1>
-          <div className="pageDescription">
+          <div className="">
               <p>Here you’ll see your customer list.</p>
               <GenericList endpoint="/customers" title="Customers" />
           </div>

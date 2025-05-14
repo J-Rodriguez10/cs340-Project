@@ -5,7 +5,9 @@ const router = express.Router();
 // GET /employeeRoles
 router.get('/', async (req, res) => {
   try {
-    const [rows] = await db.query('SELECT * FROM EmployeeRoles;');
+    const [rows] = await db.query(
+      'SELECT * FROM EmployeeRoles ORDER BY roleID ASC;'
+    );
     res.json(rows);
   } catch (err) {
     console.error('GET /employeeRoles error:', err);

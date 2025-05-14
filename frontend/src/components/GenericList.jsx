@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
-import { API_BASE_URL } from '../config';
 
+import { API_BASE_URL } from '../config';
+import { formatColumnName } from '../helper/formattingHelper';
 /**
  * GenericList.jsx
  *
@@ -218,7 +219,7 @@ export default function GenericList({ endpoint, title }) {
         <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '20px' }}>
           <thead>
             <tr>
-              {columns.map(col => <th key={col}>{col}</th>)}
+              {columns.map(col => <th key={col}>{formatColumnName(col)}</th>)}
               <th>Add/Edit</th>
             </tr>
           </thead>

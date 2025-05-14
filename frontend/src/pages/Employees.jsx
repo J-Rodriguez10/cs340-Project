@@ -4,7 +4,7 @@ function Employees() {
   return (
       <>
           <h1>Employees</h1>
-          <div className="pageDescription">
+          <div className="">
               <p>Here you’ll see all employees and their roles.</p>
               <GenericList endpoint="/employees" title="Employees" />
           </div>

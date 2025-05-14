@@ -4,7 +4,7 @@ function Tickets() {
   return (
       <>
           <h1>Tickets</h1>
-          <div className="pageDescription">
+          <div className="">
               <p>Here you’ll see all purchased tickets.</p>
               <GenericList endpoint="/tickets" title="Tickets" />
           </div>
