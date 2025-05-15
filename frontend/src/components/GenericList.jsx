@@ -177,10 +177,23 @@ export default function GenericList({ endpoint, title }) {
       return '';
     }
     
+    // Special case for movie runtime since this is not a timestamp
+    if (column === 'runtime') {
+      // Convert minutes to hours and minutes format
+      const hours = Math.floor(value / 60);
+      const minutes = value % 60;
+      if (hours > 0) {
+        return `${hours}h ${minutes}m`;
+      } else {
+        return `${minutes}m`;
+      }
+    }
+
     // Format date/time fields
     if (
       column.toLowerCase().includes('time') || 
       column.toLowerCase().includes('date') ||
+      column !== 'runtime' &&  // Excludes runtime
       (typeof value === 'string' && 
         (value.includes('T') && value.includes('Z') && value.includes('-')))
     ) {
