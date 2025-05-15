@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 
 import { API_BASE_URL } from '../config';
-import { formatColumnName } from '../helper/formattingHelper';
+import { formatColumnName, formatDateTime } from '../helper/formattingHelper';
 /**
  * GenericList.jsx
  *
@@ -172,6 +172,29 @@ export default function GenericList({ endpoint, title }) {
     setNewFormData({});
   };
 
+  const formatCellValue = (value, column) => {
+    if (value === null || value === undefined) {
+      return '';
+    }
+    
+    // Format date/time fields
+    if (
+      column.toLowerCase().includes('time') || 
+      column.toLowerCase().includes('date') ||
+      (typeof value === 'string' && 
+        (value.includes('T') && value.includes('Z') && value.includes('-')))
+    ) {
+      try {
+        return formatDateTime(value);
+      } catch (e) {
+        // If the formatting fails, return the original value
+        return value;
+      }
+    }
+    
+    return value;
+  };
+
   if (loading) return <p>Loading {title}…</p>;
   if (error) return <p>Error loading {title}.</p>;
   if (!data.length && !showCreateForm) return (
@@ -248,7 +271,7 @@ export default function GenericList({ endpoint, title }) {
                 ) : (
                   // Displays the mode row
                   <>
-                    {columns.map(col => <td key={col}>{row[col]}</td>)}
+                    {columns.map(col => <td key={col}>{formatCellValue(row[col], col)}</td>)}
                     <td>
                       <button onClick={() => handleEdit(row)}>Edit</button>
                       <button onClick={() => handleDelete(row[idField])}>Delete</button>
