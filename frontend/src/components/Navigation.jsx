@@ -6,6 +6,8 @@
  * more closely the boilerplate code in order to prevent any potential bugs.
  */
 
+import ResetButton from "./ResetButton";
+
 function Navigation() {
   return (
     <nav>
@@ -17,6 +19,8 @@ function Navigation() {
       <a href="/employees">Employees</a>
       <a href="/roles">Roles</a>
       {/* Add more links as your pages grow */}
+      
+      <ResetButton />
     </nav>
   );
 }
