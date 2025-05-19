@@ -79,4 +79,22 @@ router.put('/:id', async (req, res) => {
 });
 
 
+// GET /movies/options - For dropdowns: { value: movieID, label: "ID - Title" }
+router.get('/options', async (req, res) => {
+  try {
+    const [rows] = await db.query(`
+      SELECT 
+        movieID AS value, 
+        CONCAT(movieID, ' - ', title) AS label
+      FROM Movies
+      ORDER BY title ASC;
+    `);
+    res.json(rows);
+  } catch (err) {
+    console.error('GET /movies/options error:', err);
+    res.status(500).send('Error fetching movie options');
+  }
+});
+
+
 module.exports = router;

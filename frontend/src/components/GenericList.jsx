@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 
 import { API_BASE_URL } from '../config';
 import { formatColumnName, formatDateTime } from '../helper/formattingHelper';
+import GenericCreateForm from './helper-genericlist/GenericCreateForm';
+
 /**
  * GenericList.jsx
  *
@@ -227,27 +229,14 @@ export default function GenericList({ endpoint, title }) {
       {!showCreateForm ? (
         <button onClick={toggleCreateForm}>Create New {title.slice(0, -1)}</button>
       ) : (
-        <div style={{ marginBottom: '20px', padding: '15px', border: '1px solid #ccc' }}>
-          <h3>Create New {title.slice(0, -1)}</h3>
-          <form onSubmit={handleCreate}>
-            {columns.filter(col => col !== idField).map(col => (
-              <div key={col} style={{ marginBottom: '10px' }}>
-                <label style={{ display: 'block', marginBottom: '5px' }}>{col}:</label>
-                <input
-                  type="text"
-                  name={col}
-                  value={newFormData[col] || ""}
-                  onChange={handleCreateInputChange}
-                  required={col !== 'phoneNumber' && col !== 'endTime'}
-                />
-              </div>
-            ))}
-            <div>
-              <button type="submit">Save</button>
-              <button type="button" onClick={toggleCreateForm}>Cancel</button>
-            </div>
-          </form>
-        </div>
+        <GenericCreateForm
+          columns={columns}
+          newFormData={newFormData}
+          idField={idField}
+          handleCreateInputChange={handleCreateInputChange}
+          handleCreate={handleCreate}
+          toggleCreateForm={toggleCreateForm}
+        />
       )}
       
       {/* Data Table */}

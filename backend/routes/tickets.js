@@ -5,13 +5,26 @@ const router = express.Router();
 // GET /tickets
 router.get('/', async (req, res) => {
   try {
-    const [rows] = await db.query('SELECT * FROM Tickets;');
+    const [rows] = await db.query(`
+      SELECT 
+        t.ticketID,
+        t.price,
+        t.purchaseDate,
+        CONCAT(t.customerID, ' - ', c.firstName, ' ', c.lastName) AS customerID,
+        CONCAT(t.screeningID, ' - ', m.title, ' @ ', DATE_FORMAT(s.startTime, '%Y-%m-%d %H:%i')) AS screeningID
+      FROM Tickets t
+      JOIN Customers c ON t.customerID = c.customerID
+      JOIN Screenings s ON t.screeningID = s.screeningID
+      JOIN Movies m ON s.movieID = m.movieID
+      ORDER BY t.ticketID;
+    `);
     res.json(rows);
   } catch (err) {
     console.error('GET /tickets error:', err);
     res.status(500).send('Error fetching tickets');
   }
 });
+
 
 // POST /tickets
 router.post('/', async (req, res) => {

@@ -80,4 +80,21 @@ router.put('/:id', async (req, res) => {
   }
 });
 
+// GET /employeeRoles/options - For dropdowns: { value: roleID, label: "ID - Role Name" }
+router.get('/options', async (req, res) => {
+  try {
+    const [rows] = await db.query(`
+      SELECT 
+        roleID AS value,
+        CONCAT(roleID, ' - ', roleName) AS label
+      FROM EmployeeRoles
+      ORDER BY roleName ASC;
+    `);
+    res.json(rows);
+  } catch (err) {
+    console.error('GET /employeeRoles/options error:', err);
+    res.status(500).send('Error fetching employee role options');
+  }
+});
+
 module.exports = router;

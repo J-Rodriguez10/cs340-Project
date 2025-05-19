@@ -12,10 +12,11 @@ router.get('/', async (req, res) => {
         s.endTime,
         s.screenNumber,
         s.totalCapacity,
-        s.employeeID,
-        CONCAT(s.movieID, ' - ', m.title) AS movieInfo
+        CONCAT(s.employeeID, ' - ', e.firstName, ' ', e.lastName) AS employeeID,
+        CONCAT(s.movieID, ' - ', m.title) AS movieID
       FROM Screenings s
       JOIN Movies m ON s.movieID = m.movieID
+      JOIN Employees e ON s.employeeID = e.employeeID
       ORDER BY s.startTime;
     `);
     res.json(rows);
@@ -89,5 +90,24 @@ router.put('/:id', async (req, res) => {
     res.status(500).send('Error updating screening');
   }
 });
+
+// GET /screenings/options - For dropdowns: { value: screeningID, label: "ID - Movie Title @ Start Time" }
+router.get('/options', async (req, res) => {
+  try {
+    const [rows] = await db.query(`
+      SELECT 
+        s.screeningID AS value,
+        CONCAT(s.screeningID, ' - ', m.title, ' @ ', DATE_FORMAT(s.startTime, '%Y-%m-%d %H:%i')) AS label
+      FROM Screenings s
+      JOIN Movies m ON s.movieID = m.movieID
+      ORDER BY s.startTime;
+    `);
+    res.json(rows);
+  } catch (err) {
+    console.error('GET /screenings/options error:', err);
+    res.status(500).send('Error fetching screening options');
+  }
+});
+
 
 module.exports = router;

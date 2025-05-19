@@ -11,7 +11,7 @@ router.get('/', async (req, res) => {
         e.firstName,
         e.lastName,
         e.email,
-        CONCAT(e.roleID, ' - ', r.roleName) AS roleInfo
+        CONCAT(e.roleID, ' - ', r.roleName) AS employeeRoleID
       FROM Employees e
       JOIN EmployeeRoles r ON e.roleID = r.roleID
       ORDER BY e.lastName;
@@ -86,6 +86,23 @@ router.put('/:id', async (req, res) => {
   } catch (err) {
     console.error('PUT /employees/:id error:', err);
     res.status(500).send('Error updating employee');
+  }
+});
+
+// GET /employees/options - For dropdowns: { value: employeeID, label: "ID - First Last" }
+router.get('/options', async (req, res) => {
+  try {
+    const [rows] = await db.query(`
+      SELECT 
+        employeeID AS value, 
+        CONCAT(employeeID, ' - ', firstName, ' ', lastName) AS label
+      FROM Employees
+      ORDER BY lastName ASC;
+    `);
+    res.json(rows);
+  } catch (err) {
+    console.error('GET /employees/options error:', err);
+    res.status(500).send('Error fetching employee options');
   }
 });
 
