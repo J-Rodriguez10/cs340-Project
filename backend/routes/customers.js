@@ -78,4 +78,22 @@ router.put('/:id', async (req, res) => {
   }
 });
 
+// GET /customers/options - For dropdowns: { value: customerID, label: "ID - First Last" }
+router.get('/options', async (req, res) => {
+  try {
+    const [rows] = await db.query(`
+      SELECT 
+        customerID AS value, 
+        CONCAT(customerID, ' - ', firstName, ' ', lastName) AS label
+      FROM Customers
+      ORDER BY lastName ASC;
+    `);
+    res.json(rows);
+  } catch (err) {
+    console.error('GET /customers/options error:', err);
+    res.status(500).send('Error fetching customer options');
+  }
+});
+
+
 module.exports = router;
