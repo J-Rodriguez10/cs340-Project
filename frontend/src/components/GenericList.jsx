@@ -28,6 +28,7 @@ export default function GenericList({ endpoint, title }) {
   const [editFormData, setEditFormData] = useState({});
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [newFormData, setNewFormData] = useState({});
+  const [dropdownOptions, setDropdownOptions] = useState({});
 
   // Determine the ID field based on the endpoint
   const getIdField = () => {
@@ -46,6 +47,12 @@ export default function GenericList({ endpoint, title }) {
   // Stores the ID field
   const idField = getIdField();
 
+   // List of fields treated as foreign keys
+   const foreignKeyFields = ['movieID', 'employeeID', 'customerID', 'employeeRoleID', 'screeningID'];
+
+   // Helper function to check if a column is a foreign key
+   const isForeignKey = (column) => foreignKeyFields.includes(column);
+
   // Fetch data from API, updated to use try-catch for error handling
   const fetchData = async () => {
     setLoading(true);
@@ -63,8 +70,37 @@ export default function GenericList({ endpoint, title }) {
     }
   };
 
+  const fetchDropdownOptions = async () => {
+    try {
+      const promises = foreignKeyFields.map(async (field) => {
+        try {
+          // Build the URL and fetch options for each FK field option
+          const response = await fetch(`${API_BASE_URL}/${field.replace('ID', '')}s/options`);
+          if (!response.ok) throw new Error(`HTTP ${response.status}`);
+          const data = await response.json();
+          return [field, data]; // Return the key-value pair: [fieldName, options[]]
+        } catch (err) {
+          console.error(`Failed to fetch options for ${field}:`, err);
+          return [field, []]; // Resort to a empty array on error
+        }
+      });
+
+      // Convert array of key-value pairs into an object for easier access
+      const results = await Promise.all(promises);
+      const mapped = Object.fromEntries(results);
+      setDropdownOptions(mapped);
+    } catch (err) {
+      console.error('Failed to fetch dropdown options:', err);
+    }
+  };
+
   useEffect(() => {
     fetchData();
+    
+    // Only fetch dropdown options if there are foreign keys to display
+    if (foreignKeyFields.length > 0) {
+      fetchDropdownOptions();
+    }
   }, [endpoint]);
 
   // Handle delete operation
@@ -92,7 +128,21 @@ export default function GenericList({ endpoint, title }) {
   // Handles the edit operation
   const handleEdit = (row) => {
     setEditingId(row[idField]);
-    setEditFormData({...row});
+    const formData = {...row};
+    
+    // For foreign key fields that might be concatenated strings like "1 - Movie Title",
+    // Extract just the ID part for the form data
+    Object.keys(formData).forEach(key => {
+      if (isForeignKey(key) && typeof formData[key] === 'string' && formData[key].includes(' - ')) {
+        // Extract just the ID part (before the " - ")
+        const idPart = formData[key].split(' - ')[0];
+        if (!isNaN(Number(idPart))) {
+          formData[key] = idPart;
+        }
+      }
+    });
+
+    setEditFormData(formData);
   };
 
   // Handle form input changes when editing
@@ -210,6 +260,41 @@ export default function GenericList({ endpoint, title }) {
     return value;
   };
 
+  // Render input field based on type (text input or dropdown)
+  const renderInputField = (col, value) => {
+    if (isForeignKey(col)) {
+      // Render dropdown for foreign keys
+      return (
+        <select
+          name={col}
+          value={value || ""}
+          onChange={handleEditInputChange}
+          disabled={col === idField}
+          style={{ width: '100%', padding: '4px', borderRadius: '3px', border: '1px solid #ccc' }}
+        >
+          <option value="">Select {formatColumnName(col)}</option>
+          {(dropdownOptions[col] || []).map(opt => (
+            <option key={opt.value} value={opt.value}>
+              {opt.label}
+            </option>
+          ))}
+        </select>
+      );
+    } else {
+      // Render text input for regular fields
+      return (
+        <input
+          type="text"
+          name={col}
+          value={value || ""}
+          onChange={handleEditInputChange}
+          disabled={col === idField} // Disables the editing of the ID field
+          style={{ width: '100%', padding: '4px', borderRadius: '3px', border: '1px solid #ccc' }}
+        />
+      );
+    }
+  };
+
   if (loading) return <p>Loading {title}…</p>;
   if (error) return <p>Error loading {title}.</p>;
   if (!data.length && !showCreateForm) return (
@@ -236,6 +321,9 @@ export default function GenericList({ endpoint, title }) {
           handleCreateInputChange={handleCreateInputChange}
           handleCreate={handleCreate}
           toggleCreateForm={toggleCreateForm}
+          foreignKeyFields={foreignKeyFields}     // Added: Pass the array of foreign key fields
+          isForeignKey={isForeignKey}             // Added: Pass the helper function
+          dropdownOptions={dropdownOptions}       // Added: Pass the already fetched options
         />
       )}
       
@@ -256,13 +344,7 @@ export default function GenericList({ endpoint, title }) {
                   <>
                     {columns.map(col => (
                       <td key={col}>
-                        <input
-                          type="text"
-                          name={col}
-                          value={editFormData[col] || ""}
-                          onChange={handleEditInputChange}
-                          disabled={col === idField} // Disable editing of the ID field when editing
-                        />
+                        {renderInputField(col, editFormData[col])}
                       </td>
                     ))}
                     <td>
