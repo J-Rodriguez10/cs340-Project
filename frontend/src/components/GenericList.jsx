@@ -3,11 +3,12 @@ import { useState, useEffect } from 'react';
 import { API_BASE_URL } from '../config';
 import { formatColumnName, formatDateTime } from '../helper/formattingHelper';
 import GenericCreateForm from './helper-genericlist/GenericCreateForm';
+import DateTimePicker from './DateTimePicker'; // Import the DateTimePicker component
 
 /**
  * GenericList.jsx
  *
- * Component generated with assistance from OpenAI’s ChatGPT on May 4, 2025.
+ * Component generated with assistance from OpenAI's ChatGPT on May 4, 2025.
  * Responsible for fetching and displaying data from a given API endpoint.
  */
 
@@ -29,6 +30,7 @@ export default function GenericList({ endpoint, title }) {
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [newFormData, setNewFormData] = useState({});
   const [dropdownOptions, setDropdownOptions] = useState({});
+  const [movieDetails, setMovieDetails] = useState({});
 
   // Determine the ID field based on the endpoint
   const getIdField = () => {
@@ -52,6 +54,33 @@ export default function GenericList({ endpoint, title }) {
 
    // Helper function to check if a column is a foreign key
    const isForeignKey = (column) => foreignKeyFields.includes(column);
+
+  // Determine if a field should use DateTimePicker
+  const isDateTimeField = (column) => {
+    const dateTimeFields = ['startTime', 'endTime', 'purchaseDate'];
+    return dateTimeFields.includes(column);
+  };
+
+  // Fetch movie details for screenings - datetime picker
+  const fetchMovieDetails = async (movieID) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/movies/${movieID}`);
+      if (response.ok) {
+        const movie = await response.json();
+        setMovieDetails(movie);
+      }
+    } catch (err) {
+      console.error('Failed to fetch movie details:', err);
+    }
+  };
+
+  // Calculate end time based on start time and movie runtime - datetime picker
+  const calculateEndTime = (startTime, runtime) => {
+    if (!startTime || !runtime) return '';
+    const start = new Date(startTime);
+    const end = new Date(start.getTime() + (runtime * 60000)); // runtime in minutes
+    return end.toISOString();
+  };
 
   // Fetch data from API, updated to use try-catch for error handling
   const fetchData = async () => {
@@ -103,6 +132,13 @@ export default function GenericList({ endpoint, title }) {
     }
   }, [endpoint]);
 
+  // Fetch movie details when editing a screening - datetime picker
+  useEffect(() => {
+    if (endpoint === '/screenings' && editFormData.movieID) {
+      fetchMovieDetails(editFormData.movieID);
+    }
+  }, [editFormData.movieID, endpoint]);
+
   // Handle delete operation
   const handleDelete = async (id) => {
     if (!window.confirm(`Are you sure you want to delete this ${title.slice(0, -1)}?`)) {
@@ -148,10 +184,24 @@ export default function GenericList({ endpoint, title }) {
   // Handle form input changes when editing
   const handleEditInputChange = (e) => {
     const { name, value } = e.target;
-    setEditFormData({
+    const newFormData = {
       ...editFormData,
       [name]: value
-    });
+    };
+    
+    // Special handling for screenings - datetime picker
+    if (endpoint === '/screenings') {
+      if (name === 'startTime' && movieDetails.runtime) {
+        // Auto-calculate end time when start time changes
+        const endTime = calculateEndTime(value, movieDetails.runtime);
+        newFormData.endTime = endTime;
+      } else if (name === 'movieID') {
+        // Clear end time when movie changes
+        newFormData.endTime = '';
+      }
+    }
+    
+    setEditFormData(newFormData);
   };
 
   // Handle form input changes when creating
@@ -260,8 +310,8 @@ export default function GenericList({ endpoint, title }) {
     return value;
   };
 
-  // Render input field based on type (text input or dropdown)
-  const renderInputField = (col, value) => {
+  // Render input field based on type (text input, dropdown, or datetime picker)
+  const renderEditInputField = (col, value) => {
     if (isForeignKey(col)) {
       // Render dropdown for foreign keys
       return (
@@ -279,6 +329,16 @@ export default function GenericList({ endpoint, title }) {
             </option>
           ))}
         </select>
+      );
+    } else if (isDateTimeField(col)) {
+      // Render DateTimePicker for datetime fields - datetime picker
+      return (
+        <DateTimePicker
+          name={col}
+          value={value || ""}
+          onChange={handleEditInputChange}
+          style={{ width: '100%', padding: '4px', borderRadius: '3px', border: '1px solid #ccc' }}
+        />
       );
     } else {
       // Render text input for regular fields
@@ -324,6 +384,7 @@ export default function GenericList({ endpoint, title }) {
           foreignKeyFields={foreignKeyFields}     // Added: Pass the array of foreign key fields
           isForeignKey={isForeignKey}             // Added: Pass the helper function
           dropdownOptions={dropdownOptions}       // Added: Pass the already fetched options
+          endpoint={endpoint}                     // Added: Pass endpoint to determine special behavior - datetime picker
         />
       )}
       
@@ -344,12 +405,18 @@ export default function GenericList({ endpoint, title }) {
                   <>
                     {columns.map(col => (
                       <td key={col}>
-                        {renderInputField(col, editFormData[col])}
+                        {renderEditInputField(col, editFormData[col])}
                       </td>
                     ))}
                     <td>
                       <button onClick={handleSave}>Save</button>
                       <button onClick={handleCancel}>Cancel</button>
+                      {/* Show movie runtime info for screenings - datetime picker enhancement */}
+                      {endpoint === '/screenings' && movieDetails.runtime && (
+                        <div style={{ fontSize: '11px', color: '#4a90e2', marginTop: '4px' }}>
+                          Runtime: {Math.floor(movieDetails.runtime / 60)}h {movieDetails.runtime % 60}m
+                        </div>
+                      )}
                     </td>
                   </>
                 ) : (
