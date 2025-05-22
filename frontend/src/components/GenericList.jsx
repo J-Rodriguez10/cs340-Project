@@ -222,8 +222,7 @@ export default function GenericList({ endpoint, title }) {
   const columns = data.length ? Object.keys(data[0]) : [];
 
   return (
-    <div style={{ padding: '1rem' }}>
-      <h2>{title}</h2>
+    <div className="entity-table" style={{ padding: '1rem' }}>
       
       {/* Create Form */}
       {!showCreateForm ? (
@@ -239,6 +238,10 @@ export default function GenericList({ endpoint, title }) {
         />
       )}
       
+
+      
+      <h2>{title}</h2>
+
       {/* Data Table */}
       {data.length > 0 && (
         <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '20px' }}>
