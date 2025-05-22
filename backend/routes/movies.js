@@ -13,6 +13,39 @@ router.get('/', async (req, res) => {
   }
 });
 
+// GET /movies/options
+router.get('/options', async (req, res) => {
+  try {
+    const [rows] = await db.query(`
+      SELECT 
+        movieID AS value, 
+        CONCAT(movieID, ' - ', title) AS label
+      FROM Movies
+      ORDER BY title ASC;
+    `);
+    res.json(rows);
+  } catch (err) {
+    console.error('GET /movies/options error:', err);
+    res.status(500).send('Error fetching movie options');
+  }
+});
+
+// GET /movies/:id
+router.get('/:id', async (req, res) => {
+  try {
+    const [rows] = await db.query('SELECT * FROM Movies WHERE movieID = ?', [req.params.id]);
+    
+    if (rows.length === 0) {
+      return res.status(404).send('Movie not found');
+    }
+    
+    res.json(rows[0]); // Return the single movie object
+  } catch (err) {
+    console.error('GET /movies/:id error:', err);
+    res.status(500).send('Error fetching movie details');
+  }
+});
+
 // POST /movies
 router.post('/', async (req, res) => {
   try {
@@ -34,22 +67,6 @@ router.post('/', async (req, res) => {
   } catch (err) {
     console.error('POST /movies error:', err);
     res.status(500).send('Error creating movie');
-  }
-});
-
-// DELETE /movies/:id
-router.delete('/:id', async (req, res) => {
-  try {
-    const [result] = await db.query('DELETE FROM Movies WHERE movieID = ?', [req.params.id]);
-    
-    if (result.affectedRows === 0) {
-      return res.status(404).send('Movie not found');
-    }
-    
-    res.status(200).send({ message: 'Movie deleted successfully' });
-  } catch (err) {
-    console.error('DELETE /movies/:id error:', err);
-    res.status(500).send('Error deleting movie');
   }
 });
 
@@ -78,23 +95,20 @@ router.put('/:id', async (req, res) => {
   }
 });
 
-
-// GET /movies/options - For dropdowns: { value: movieID, label: "ID - Title" }
-router.get('/options', async (req, res) => {
+// DELETE /movies/:id
+router.delete('/:id', async (req, res) => {
   try {
-    const [rows] = await db.query(`
-      SELECT 
-        movieID AS value, 
-        CONCAT(movieID, ' - ', title) AS label
-      FROM Movies
-      ORDER BY title ASC;
-    `);
-    res.json(rows);
+    const [result] = await db.query('DELETE FROM Movies WHERE movieID = ?', [req.params.id]);
+    
+    if (result.affectedRows === 0) {
+      return res.status(404).send('Movie not found');
+    }
+    
+    res.status(200).send({ message: 'Movie deleted successfully' });
   } catch (err) {
-    console.error('GET /movies/options error:', err);
-    res.status(500).send('Error fetching movie options');
+    console.error('DELETE /movies/:id error:', err);
+    res.status(500).send('Error deleting movie');
   }
 });
-
 
 module.exports = router;
