@@ -1,0 +1,91 @@
+/* 
+===========================
+Database Reset Button
+===========================
+*/
+.reset-button {
+  padding: 8px 20px;
+  background-color: #e13e1b;
+  color: white;
+  font-weight: 500;
+  border: none;
+  border-radius: 15px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+/* 
+===========================
+Wide Button
+===========================
+*/
+
+.wide-button {
+  position: relative;
+  padding: 20px;
+  border-radius: 20px;
+  color: white;
+  overflow: hidden;
+  width: 220px;
+  min-height: 110px;
+  height: auto;
+  border: none;
+  text-align: left;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.wide-button-content p {
+  max-width: 20px;
+}
+
+.wide-button-black {
+  background: var(--black-700);
+}
+
+.wide-button-black:hover{
+  background: var(--black-500);
+}
+
+.wide-button-blue {
+  background: #097ff5;
+}
+
+.wide-button-blue:hover{
+  background: #1288ff;
+}
+
+
+
+/* 
+  Citation for the following styles:
+  Date: 2025-05-19
+  Based on design intent and AI-assisted suggestions.
+  Prompt: How do I style a button to create a white gradient overlay over a solid
+  color. Also, set up the style for positioning an icon, so I can place it.
+*/
+.wide-button-blue::after,
+.wide-button-black::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 20px;
+  background: linear-gradient(to bottom right, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0));
+  pointer-events: none;
+}
+
+.wide-button-icon {
+  position: absolute;
+  top: 25%;
+  right: 20px;
+  transform: translateY(-50%);
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}

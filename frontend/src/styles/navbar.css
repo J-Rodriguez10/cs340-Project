@@ -1,8 +1,20 @@
-.logo {
-  background: blue;
+.logo-cont {
   width: 100%;
-  height: 50px;
+  min-height: 75px;
+  max-height: 75px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0rem;
 }
+
+.logo-pic {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+
 /* Navigation bar */
 nav {
   position: fixed;
@@ -15,9 +27,12 @@ nav {
   gap: 8px;
   align-items: center;
   background-color: var(--black-700); /* optional */
-  border-right: 1px solid red;
+  /* border-right: 1px solid red; */
   z-index: 1000; /* ensure it's above scrollable content */
   overflow-y: auto; /* scroll inside navbar if needed */
+
+  /* The top/down padding matches the same amount as the .outer-cont selector in <main>  */
+  padding: 1.5rem 0;
 }
 
 .navlink-anchor {
@@ -28,6 +43,7 @@ nav {
   gap: 0.8rem;
   border-radius: 18px;
   padding: 0.4rem;
+  font-size: 0.9rem;
 }
 
 .navlink-anchor.active {

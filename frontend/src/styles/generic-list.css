@@ -1,0 +1,116 @@
+
+.generic-list-cont {
+  padding: 1rem 0;
+}
+
+.generic-list-top-section {
+  display:flex;
+  gap: 1rem;
+}
+
+.entity-cont {
+  background: var(--black-500);
+  padding: 1.5rem 0.75rem;
+  margin: 1rem 0;
+  border-radius: 25px;
+}
+
+
+/* Headings */
+.entity-header {
+  /* margin-left: 16px; */
+  color: var(--text-cyan);
+  font-weight: 600;
+  font-size: 1.05rem;
+  margin: 0.8rem 0;
+}
+
+
+/* Table styles */
+
+.entity-table {
+  width: 100%;
+  border-collapse: separate;   
+  border-spacing: 0 0.25rem; 
+
+}
+
+.entity-table th {
+  text-align:left;
+  font-size: 0.7rem;
+  background: var(--black-500);
+  font-weight: 500;  
+  color: var(--text-faded-white);
+}
+
+.entity-table td {
+  font-size: 0.9rem;
+}
+
+.generic-list-buttons {
+  display: flex;
+  gap: 5px;
+}
+
+/* 
+  Citation for the following styles:
+  Date: 2025-05-19
+  Based on design goals and AI-assisted table styling.
+  Prompts:1) How do I style a table? The styles I use do not seem to apply for tables. 
+  I want alternating row colors, pill-shaped rounded corners, no default borders, 
+  and a smooth hover effect that slightly lifts the row.
+  2)Add a basic animation where when the user hovers over the row, it highlights and rises.
+*/
+
+
+/* strip any leftover default borders on cells */
+.entity-table th,
+.entity-table td {
+  border: none;
+  /* text-align: center; */
+  padding: 8px 16px;
+
+}
+
+/* apply the row colors as you had them */
+.entity-table tr:nth-child(even) {
+  background-color: var(--black-650);
+}
+.entity-table tr:nth-child(odd) {
+  background-color: var(--black-700);
+}
+
+/* round each row by rounding the first/last cell of that row */
+.entity-table td:first-child {
+  border-top-left-radius: 20px;
+  border-bottom-left-radius: 20px;
+}
+.entity-table td:last-child {
+  border-top-right-radius: 20px;
+  border-bottom-right-radius: 20px;
+}
+
+/* ----------- */
+
+/* 1) Make sure every cell transitions smoothly */
+.entity-table td {
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+/* 2) On hover, recolor (and even “lift”) the entire row */
+.entity-table tbody tr:hover td {
+  background-color: var(--black-400);      /* or your highlight color */
+  transform: translateY(-2px);             /* subtle lift */
+}
+
+/* 3) Keep the pill shape on the hovered row too */
+.entity-table tbody tr:hover td:first-child {
+  border-top-left-radius: 20px;
+  border-bottom-left-radius: 20px;
+}
+.entity-table tbody tr:hover td:last-child {
+  border-top-right-radius: 20px;
+  border-bottom-right-radius: 20px;
+}
+
+

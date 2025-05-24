@@ -1,15 +1,12 @@
-
-
 import { CustomerIcon, EmployeeRolesIcon, EmployeesIcon, PieChartIcon, ScreeningIcon, TicketIcon } from "../../icons/NavbarIcons";
-import ResetButton from "../ResetButton";
 import Navlink from "./Navlink";
 
 function Navigation() {
   return (
     <nav>
       {/* Logo */}
-      <div className="logo">
-        CinePictures Logo
+      <div className="logo-cont">
+        <img className="logo-pic" src="/src/images/cinepictures-logo-white.png"/>
       </div>
       
       {/* Links */}
@@ -19,9 +16,7 @@ function Navigation() {
       <Navlink href="/tickets" label="Tickets" icon={TicketIcon} />
       <Navlink href="/employees" label="Employees" icon={EmployeesIcon} />
       <Navlink href="/roles" label="Roles" icon={EmployeeRolesIcon} />
-      
-      {/* Databse Rest Button */}
-      <ResetButton />
+    
     </nav>
   );
 }

@@ -24,7 +24,7 @@ function ResetButton() {
 
   return (
     <button className="reset-button" onClick={handleReset}>
-      RESET DATABASE
+      Reset Database
     </button>
   );
 }

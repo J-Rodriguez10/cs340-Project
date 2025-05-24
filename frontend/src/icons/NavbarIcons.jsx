@@ -1,3 +1,7 @@
+// Citation for the following icons:
+// Date: 2025-05-19
+// ALL Icons sourced from Iconify (https://icon-sets.iconify.design/)
+
 export const PieChartIcon = (
   <svg
     xmlns="http://www.w3.org/2000/svg"

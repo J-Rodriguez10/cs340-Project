@@ -1,7 +1,5 @@
-import { useLocation } from "react-router-dom";
-
 function Navlink({ icon, label, href }) {
-  // const location = useLocation();
+
   const isActive = location.pathname === href;
 
   return (

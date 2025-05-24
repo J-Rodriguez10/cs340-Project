@@ -12,6 +12,7 @@ import Tickets from './pages/Tickets';
 import Customers from './pages/Customers';
 import Employees from './pages/Employees';
 import EmployeeRoles from './pages/EmployeeRoles';
+import Toolbar from './components/Toolbar';
 
 // Backend port 
 const backendPort = 32849; // Replace with your actual backend port
@@ -31,13 +32,15 @@ function App() {
       <main
         style={{
           flexGrow: 1,
-          paddingLeft: navbarVisible ? `${navWidth}px` : '0',
-          transition: 'padding-left 0.1s linear'
+          paddingLeft: navbarVisible ? `${navWidth}px` : '0'
         }}
 
         className="main-cont"
-
       >
+
+        <Toolbar toggleNavbar={() => setNavbarVisible(prev => !prev)}/>
+
+        {/*  */}
         <Routes>
           <Route path="/" element={<Home backendURL={backendURL} />} />
           <Route path="/movies" element={<Movies />} />

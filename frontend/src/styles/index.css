@@ -1,4 +1,3 @@
-
 /*
 ===========================
 Color Palette
@@ -6,44 +5,71 @@ Color Palette
 */
 
 :root {
-
-  /* Background Gradients: */
-  --gradient-blue: linear-gradient(180deg, rgba(255, 255, 255, 0.05) 10%, rgba(255, 255, 255, 0.45) 85%), #0A84FF;
-  --gradient-black: linear-gradient(180deg, rgba(255, 255, 255, 0.05) 10%, rgba(255, 255, 255, 0.45) 85%), #000000;
-
   /* Blacks: */
   --black-300: #545454;
   --black-400: #3f3f3f;
+  --black-450: #343434;
   --black-500: #323232;
+  --black-650: #2d2d2d;
   --black-700: #2a2a2a;
 
   /* Text Colors: */
   --text-faded: #737373;
+  --text-faded-white: #e8e8e8;
   --text-cyan: #63e6e2;
 
+  --text-red: #da3a3a;
 }
 
+/*
+===========================
+Miscellaneous Containers
+===========================
+*/
+
 .main-cont {
-  /* border: 1px solid orange; */
+
 }
 
 .page-cont {
-  /* border: 2px solid pink; */
+  padding: 0.5rem 0;
+}
+.page-intro {
+  font-size: 0.9rem;
 }
 
-.entity-table {
-  border: 1px solid orange;
+.outer-cont {
+  width: 100%;
+  display:flex;
+  /* border: 3px solid blue; */
+  background: var(--black-700);
+  margin: 0 auto;
+  padding: 1.5rem 1rem;
+  max-width: 1700px;
 }
 
 
+/*
+=================================
+Leftover Styles From Exploration
+=================================
+*/
 
-
-.practice {
-  display: flex;
-  min-width: 400px;
-  min-height: 300px;
-  background: var(--gradient-black);
+/* Forms */
+.cuForm {
+  margin-left: 32px;
 }
+
+input, select {
+  margin-bottom: 4px;
+  margin-right: 12px;
+}
+
+/* Home Page Text Block */
+.homepageDescription {
+  margin-left: 32px;
+}
+
 
 /*
 ===========================
@@ -51,7 +77,6 @@ CSS Normalization
 ===========================
 */
 
-/* ===== CSS RESET ===== */
 *,
 *::before,
 *::after {
@@ -65,8 +90,6 @@ body {
   background: var(--black-700);
   color: white;
 }
-
-
 
 html, body {
   height: 100%;
@@ -101,69 +124,6 @@ ol {
   list-style: none;
 }
 
-table {
-  border-collapse: collapse;
-  border-spacing: 0;
-}
-
-
-/* ------------ */
-
-
-/* Headings */
-h1, h2 {
-  margin-left: 16px;
-}
-
-/* Table styles */
-th, td {
-  border: 1px solid #ddd;
-  padding: 12px;
-  text-align: center;
-}
-
-th {
-  background-color: #f2f2f2;
-}
-
-tr:nth-child(even) {
-  background-color: #f9f9f9;
-}
-
-/* Forms */
-.cuForm {
-  margin-left: 32px;
-}
-
-input, select {
-  margin-bottom: 4px;
-  margin-right: 12px;
-}
-
-
-.outer-cont {
-  width: 100%;
-  display:flex;
-  /* border: 3px solid blue; */
-  background: var(--black-700);
-  margin: 0 auto;
-  padding: 0 1rem;
-}
-
-/* Reset Button */
-.reset-button {
-  margin-left: auto;
-  margin-right: 20px;
-  padding: 10px;
-  background-color: rgba(247, 27, 27, 0.764);
-  color: white;
-  font-weight: 500;
-  border: none;
-  border-radius: 4px;
+button {
   cursor: pointer;
-}
-
-/* Home Page Text Block */
-.homepageDescription {
-  margin-left: 32px;
 }
