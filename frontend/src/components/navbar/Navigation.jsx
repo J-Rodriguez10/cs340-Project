@@ -6,7 +6,7 @@ function Navigation() {
     <nav>
       {/* Logo */}
       <div className="logo-cont">
-        <img className="logo-pic" src="/src/images/cinepictures-logo-white.png"/>
+        <img className="logo-pic" src="/public/images/cinepictures-logo-white.png"/>
       </div>
       
       {/* Links */}

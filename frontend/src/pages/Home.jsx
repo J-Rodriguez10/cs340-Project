@@ -14,7 +14,7 @@ function Home() {
         <HomeCard
           title="ER Diagram"
           description="Visual representation of entities and relationships within the CinePictures database."
-          imageSrc="src/images/erd.png"
+          imageSrc="public/images/erd.png"
           imageAlt="ER Diagram preview"
           variant="blue"
           onDownloadClick={() => downloadFile("/files/ERD.png", "ERD.png")}
@@ -24,7 +24,7 @@ function Home() {
         <HomeCard
           title="Database Schema"
           description="The structural blueprint of all tables, columns, and relationships used in CinePictures."
-          imageSrc="src/images/database-schema.png"
+          imageSrc="public/images/database-schema.png"
           imageAlt="Database Schema preview"
           variant="black"
           onDownloadClick={() => downloadFile("/files/database-schema.png", "Database_Schema.png")}
@@ -33,7 +33,7 @@ function Home() {
         <HomeCard
           title="DDL & DML Scripts"
           description="SQL scripts that perform all data operations for the CinePictures system."
-          imageSrc="src/images/sql-preview.png"
+          imageSrc="public/images/sql-preview.png"
           imageAlt="DDL and DML Scripts preview"
           variant="black"
           onDownloadClick={() => downloadFile("/files/cinepictures-sql-scripts.zip", "CinePictures_SQL_Scripts.zip")}
@@ -42,7 +42,7 @@ function Home() {
         <HomeCard
           title="Project Report"
           description="Final report detailing the database's development process."
-          imageSrc="src/images/report-preview.png"
+          imageSrc="public/images/report-preview.png"
           imageAlt="Project Report preview"
           variant="blue"
           onDownloadClick={() => downloadFile("/files/project-report.pdf", "Project_Report.pdf")}
