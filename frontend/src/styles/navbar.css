@@ -1,0 +1,78 @@
+.logo-cont {
+  width: 100%;
+  min-height: 75px;
+  max-height: 75px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0rem;
+}
+
+.logo-pic {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+
+/* Navigation bar */
+nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 200px; /* Adjust as needed */
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+  background-color: var(--black-700); /* optional */
+  /* border-right: 1px solid red; */
+  z-index: 1000; /* ensure it's above scrollable content */
+  overflow-y: auto; /* scroll inside navbar if needed */
+
+  /* The top/down padding matches the same amount as the .outer-cont selector in <main>  */
+  padding: 1.5rem 0;
+}
+
+.navlink-anchor {
+  width: 100%;
+  /* border: 1px solid red; */
+  display:flex;
+  align-items: center;
+  gap: 0.8rem;
+  border-radius: 18px;
+  padding: 0.4rem;
+  font-size: 0.9rem;
+}
+
+.navlink-anchor.active {
+  background-color: var(--black-400);
+}
+
+.navlink-anchor.active .navlink-icon {
+  background-color: var(--black-300);
+}
+
+.navlink-anchor:hover {
+  background-color: var(--black-400);
+}
+
+.navlink-anchor:hover .navlink-icon {
+  background-color: var(--black-300);
+}
+
+
+.navlink-icon {
+  width: 38px;
+  height: 38px;
+  display: inline-block;
+  /* border: 1px solid blue; */
+  padding: 8px;
+  border-radius: 10px;
+}
+.navlink-label {
+
+}
+
+

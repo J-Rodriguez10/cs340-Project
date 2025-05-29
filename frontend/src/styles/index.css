@@ -1,0 +1,129 @@
+/*
+===========================
+Color Palette
+===========================
+*/
+
+:root {
+  /* Blacks: */
+  --black-300: #545454;
+  --black-400: #3f3f3f;
+  --black-450: #343434;
+  --black-500: #323232;
+  --black-650: #2d2d2d;
+  --black-700: #2a2a2a;
+
+  /* Text Colors: */
+  --text-faded: #737373;
+  --text-faded-white: #e8e8e8;
+  --text-cyan: #63e6e2;
+
+  --text-red: #da3a3a;
+}
+
+/*
+===========================
+Miscellaneous Containers
+===========================
+*/
+
+.main-cont {
+
+}
+
+.page-cont {
+  padding: 0.5rem 0;
+}
+.page-intro {
+  font-size: 0.9rem;
+}
+
+.outer-cont {
+  width: 100%;
+  display:flex;
+  /* border: 3px solid blue; */
+  background: var(--black-700);
+  margin: 0 auto;
+  padding: 1.5rem 1rem;
+  max-width: 1700px;
+}
+
+
+/*
+=================================
+Leftover Styles From Exploration
+=================================
+*/
+
+/* Forms */
+.cuForm {
+  margin-left: 32px;
+}
+
+input, select {
+  margin-bottom: 4px;
+  margin-right: 12px;
+}
+
+/* Home Page Text Block */
+.homepageDescription {
+  margin-left: 32px;
+}
+
+
+/*
+===========================
+CSS Normalization
+===========================
+*/
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* Setting the background all one color */
+body {
+  background: var(--black-700);
+  color: white;
+}
+
+html, body {
+  height: 100%;
+  font-family: system-ui, sans-serif;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+}
+
+input,
+button,
+textarea,
+select {
+  font: inherit;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+ul,
+ol {
+  list-style: none;
+}
+
+button {
+  cursor: pointer;
+}

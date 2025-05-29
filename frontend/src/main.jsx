@@ -1,7 +1,18 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
-import './index.css'; 
+
+
+// STYLES:
+import './styles/index.css'; 
+import './styles/navbar.css'; 
+import './styles/generic-list.css'; 
+import './styles/toolbar.css'; 
+import './styles/buttons.css'; 
+import './styles/home.css'; 
+
+
+
 import App from './App.jsx';
 
 createRoot(document.getElementById('root')).render(

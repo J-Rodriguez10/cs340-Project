@@ -4,6 +4,9 @@ import { API_BASE_URL } from '../config';
 import { formatColumnName, formatDateTime } from '../helper/formattingHelper';
 import GenericCreateForm from './helper-genericlist/GenericCreateForm';
 import DateTimePicker from './DateTimePicker'; // Import the DateTimePicker component
+import WideButton from './WideButton';
+import { PlusSignIcon } from '../icons/MiscellaneousIcons';
+import { PencilIcon, TrashbinIcon } from '../icons/GenericListIcons';
 
 /**
  * GenericList.jsx
@@ -367,73 +370,83 @@ export default function GenericList({ endpoint, title }) {
   const columns = data.length ? Object.keys(data[0]) : [];
 
   return (
-    <div style={{ padding: '1rem' }}>
-      <h2>{title}</h2>
+    <div className="generic-list-cont">
       
-      {/* Create Form */}
-      {!showCreateForm ? (
-        <button onClick={toggleCreateForm}>Create New {title.slice(0, -1)}</button>
-      ) : (
-        <GenericCreateForm
-          columns={columns}
-          newFormData={newFormData}
-          idField={idField}
-          handleCreateInputChange={handleCreateInputChange}
-          handleCreate={handleCreate}
-          toggleCreateForm={toggleCreateForm}
-          foreignKeyFields={foreignKeyFields}     // Added: Pass the array of foreign key fields
-          isForeignKey={isForeignKey}             // Added: Pass the helper function
-          dropdownOptions={dropdownOptions}       // Added: Pass the already fetched options
-          endpoint={endpoint}                     // Added: Pass endpoint to determine special behavior - datetime picker
-        />
-      )}
-      
-      {/* Data Table */}
-      {data.length > 0 && (
-        <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '20px' }}>
-          <thead>
-            <tr>
-              {columns.map(col => <th key={col}>{formatColumnName(col)}</th>)}
-              <th>Add/Edit</th>
-            </tr>
-          </thead>
-          <tbody>
-            {data.map((row) => (
-              <tr key={row[idField]}>
-                {editingId === row[idField] ? (
-                  // Edits the mode row to show the edit form
-                  <>
-                    {columns.map(col => (
-                      <td key={col}>
-                        {renderEditInputField(col, editFormData[col])}
-                      </td>
-                    ))}
-                    <td>
-                      <button onClick={handleSave}>Save</button>
-                      <button onClick={handleCancel}>Cancel</button>
-                      {/* Show movie runtime info for screenings - datetime picker enhancement */}
-                      {endpoint === '/screenings' && movieDetails.runtime && (
-                        <div style={{ fontSize: '11px', color: '#4a90e2', marginTop: '4px' }}>
-                          Runtime: {Math.floor(movieDetails.runtime / 60)}h {movieDetails.runtime % 60}m
-                        </div>
-                      )}
-                    </td>
-                  </>
-                ) : (
-                  // Displays the mode row
-                  <>
-                    {columns.map(col => <td key={col}>{formatCellValue(row[col], col)}</td>)}
-                    <td>
-                      <button onClick={() => handleEdit(row)}>Edit</button>
-                      <button onClick={() => handleDelete(row[idField])}>Delete</button>
-                    </td>
-                  </>
-                )}
+
+      <div className="generic-list-top-section">
+
+
+        {/* Create Form */}
+        {!showCreateForm ? (
+          <WideButton icon={PlusSignIcon} onClick={toggleCreateForm}>Create New {title.slice(0, -1)}</WideButton>
+        ) : (
+          <GenericCreateForm
+            columns={columns}
+            newFormData={newFormData}
+            idField={idField}
+            handleCreateInputChange={handleCreateInputChange}
+            handleCreate={handleCreate}
+            toggleCreateForm={toggleCreateForm}
+            foreignKeyFields={foreignKeyFields}     // Added: Pass the array of foreign key fields
+            isForeignKey={isForeignKey}             // Added: Pass the helper function
+            dropdownOptions={dropdownOptions}       // Added: Pass the already fetched options
+            endpoint={endpoint}                     // Added: Pass endpoint to determine special behavior - datetime picker
+          />
+        )}
+      </div>
+
+      {/* Entity-Cont = Entity-header + Entity-Table */}
+      <div className="entity-cont">
+        {/* Entity Header */}
+        <h2 className="entity-header">{title}</h2>
+
+        {/* Entity Table */}
+        {data.length > 0 && (
+          <table className="entity-table" style={{ width: '100%' }}>
+            <thead>
+              <tr>
+                {columns.map(col => <th key={col}>{formatColumnName(col)}</th>)}
+                <th>Add/Edit</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
+            </thead>
+            <tbody>
+              {data.map((row) => (
+                <tr key={row[idField]}>
+                  {editingId === row[idField] ? (
+                    // Edits the mode row to show the edit form
+                    <>
+                      {columns.map(col => (
+                        <td key={col}>
+                          {renderEditInputField(col, editFormData[col])}
+                        </td>
+                      ))}
+                      <td>
+                        <button onClick={handleSave}>Save</button>
+                        <button onClick={handleCancel}>Cancel</button>
+                        {/* Show movie runtime info for screenings - datetime picker enhancement */}
+                        {endpoint === '/screenings' && movieDetails.runtime && (
+                          <div style={{ fontSize: '11px', color: '#4a90e2', marginTop: '4px' }}>
+                            Runtime: {Math.floor(movieDetails.runtime / 60)}h {movieDetails.runtime % 60}m
+                          </div>
+                        )}
+                      </td>
+                    </>
+                  ) : (
+                    // Displays the mode row
+                    <>
+                      {columns.map(col => <td key={col}>{formatCellValue(row[col], col)}</td>)}
+                      <td className="generic-list-buttons">
+                        <button onClick={() => handleEdit(row)}>{PencilIcon}</button>
+                        <button onClick={() => handleDelete(row[idField])}>{TrashbinIcon}</button>
+                      </td>
+                    </>
+                  )}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+      </div>   
     </div>
   );
 }
