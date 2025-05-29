@@ -13,7 +13,7 @@ console.log(`Looking for dist at: ${path.join(__dirname, 'dist')}`);
 // Serve static files from the 'dist' directory
 app.use(express.static(path.join(__dirname, 'dist')));
 
-const PORT = 32828;
+const PORT = 32829;
 
 // Middleware to handle all requests that don't match static files
 app.use(function(req, res) {
