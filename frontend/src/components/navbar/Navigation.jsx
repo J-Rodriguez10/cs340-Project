@@ -1,4 +1,4 @@
-import { CustomerIcon, EmployeeRolesIcon, EmployeesIcon, PieChartIcon, ScreeningIcon, TicketIcon } from "../../icons/NavbarIcons";
+import { CustomerIcon, EmployeeRolesIcon, EmployeesIcon, MovieIcon, PieChartIcon, ScreeningIcon, TicketIcon } from "../../icons/NavbarIcons";
 import Navlink from "./Navlink";
 
 function Navigation() {
@@ -14,6 +14,7 @@ function Navigation() {
       <Navlink href="/customers" label="Customers" icon={CustomerIcon} />
       <Navlink href="/screenings" label="Screenings" icon={ScreeningIcon} />
       <Navlink href="/tickets" label="Tickets" icon={TicketIcon} />
+      <Navlink href="/movies" label="Movies" icon={MovieIcon} />
       <Navlink href="/employees" label="Employees" icon={EmployeesIcon} />
       <Navlink href="/roles" label="Roles" icon={EmployeeRolesIcon} />
     

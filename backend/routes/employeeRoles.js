@@ -19,19 +19,16 @@ router.get('/', async (req, res) => {
 router.post('/', async (req, res) => {
   try {
     const { roleName } = req.body;
-    
+
     if (!roleName) {
       return res.status(400).send('Missing required fields');
     }
-    
-    const [result] = await db.query(
-      'INSERT INTO EmployeeRoles (roleName) VALUES (?)',
-      [roleName]
-    );
-    
-    res.status(201).send({ 
+
+    const [result] = await db.query('CALL sp_AddEmployeeRole(?)', [roleName]);
+
+    res.status(201).send({
       message: 'Employee role created successfully',
-      id: result.insertId 
+      id: result.insertId || null
     });
   } catch (err) {
     console.error('POST /employeeRoles error:', err);
@@ -42,12 +39,14 @@ router.post('/', async (req, res) => {
 // DELETE /employeeRoles/:id
 router.delete('/:id', async (req, res) => {
   try {
-    const [result] = await db.query('DELETE FROM EmployeeRoles WHERE roleID = ?', [req.params.id]);
-    
-    if (result.affectedRows === 0) {
+    const [rows] = await db.query('CALL sp_DeleteEmployeeRoleByID(?)', [req.params.id]);
+
+    const affected = rows[0][0]?.affectedRows;
+
+    if (affected === 0) {
       return res.status(404).send('Employee role not found');
     }
-    
+
     res.status(200).send({ message: 'Employee role deleted successfully' });
   } catch (err) {
     console.error('DELETE /employeeRoles/:id error:', err);
@@ -55,30 +54,30 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
+
 // PUT /employeeRoles/:id
 router.put('/:id', async (req, res) => {
   try {
     const { roleName } = req.body;
-    
+
     if (!roleName) {
       return res.status(400).send('Missing required fields');
     }
-    
-    const [result] = await db.query(
-      'UPDATE EmployeeRoles SET roleName = ? WHERE roleID = ?',
-      [roleName, req.params.id]
-    );
-    
-    if (result.affectedRows === 0) {
+
+    const [rows] = await db.query('CALL sp_UpdateEmployeeRoleByID(?, ?)', [req.params.id, roleName]);
+
+    const affected = rows[0][0]?.affectedRows;
+
+    if (affected === 0) {
       return res.status(404).send('Employee role not found');
     }
-    
+
     res.status(200).send({ message: 'Employee role updated successfully' });
   } catch (err) {
     console.error('PUT /employeeRoles/:id error:', err);
     res.status(500).send('Error updating employee role');
   }
-});
+})
 
 // GET /employeeRoles/options - For dropdowns: { value: roleID, label: "ID - Role Name" }
 router.get('/options', async (req, res) => {

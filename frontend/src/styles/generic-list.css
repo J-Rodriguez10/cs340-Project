@@ -94,7 +94,7 @@
 
 /* 1) Make sure every cell transitions smoothly */
 .entity-table td {
-  transition: background-color 0.2s ease, transform 0.2s ease;
+  transition: background-color 0.1s ease, transform 0.1s ease;
 }
 
 /* 2) On hover, recolor (and even “lift”) the entire row */

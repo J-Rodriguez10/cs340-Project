@@ -30,19 +30,19 @@ router.get('/', async (req, res) => {
 router.post('/', async (req, res) => {
   try {
     const { movieID, screenNumber, startTime, endTime, totalCapacity, employeeID } = req.body;
-    
+
     if (!movieID || !screenNumber || !startTime || !totalCapacity || !employeeID) {
       return res.status(400).send('Missing required fields');
     }
-    
+
     const [result] = await db.query(
-      'INSERT INTO Screenings (movieID, screenNumber, startTime, endTime, totalCapacity, employeeID) VALUES (?, ?, ?, ?, ?, ?)',
+      'CALL sp_AddScreening(?, ?, ?, ?, ?, ?)',
       [movieID, screenNumber, startTime, endTime, totalCapacity, employeeID]
     );
-    
-    res.status(201).send({ 
+
+    res.status(201).send({
       message: 'Screening created successfully',
-      id: result.insertId 
+      id: result.insertId || null
     });
   } catch (err) {
     console.error('POST /screenings error:', err);
@@ -50,15 +50,21 @@ router.post('/', async (req, res) => {
   }
 });
 
+
 // DELETE /screenings/:id
 router.delete('/:id', async (req, res) => {
   try {
-    const [result] = await db.query('DELETE FROM Screenings WHERE screeningID = ?', [req.params.id]);
-    
-    if (result.affectedRows === 0) {
+    const [rows] = await db.query(
+      'CALL sp_DeleteScreeningByID(?)',
+      [req.params.id]
+    );
+
+    const affected = rows[0][0]?.affectedRows;
+
+    if (affected === 0) {
       return res.status(404).send('Screening not found');
     }
-    
+
     res.status(200).send({ message: 'Screening deleted successfully' });
   } catch (err) {
     console.error('DELETE /screenings/:id error:', err);
@@ -66,30 +72,34 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
+
 // PUT /screenings/:id
 router.put('/:id', async (req, res) => {
   try {
     const { movieID, screenNumber, startTime, endTime, totalCapacity, employeeID } = req.body;
-    
+
     if (!movieID || !screenNumber || !startTime || !totalCapacity || !employeeID) {
       return res.status(400).send('Missing required fields');
     }
-    
-    const [result] = await db.query(
-      'UPDATE Screenings SET movieID = ?, screenNumber = ?, startTime = ?, endTime = ?, totalCapacity = ?, employeeID = ? WHERE screeningID = ?',
-      [movieID, screenNumber, startTime, endTime, totalCapacity, employeeID, req.params.id]
+
+    const [rows] = await db.query(
+      'CALL sp_UpdateScreeningByID(?, ?, ?, ?, ?, ?, ?)',
+      [req.params.id, movieID, screenNumber, startTime, endTime, totalCapacity, employeeID]
     );
-    
-    if (result.affectedRows === 0) {
+
+    const affected = rows[0][0]?.affectedRows;
+
+    if (affected === 0) {
       return res.status(404).send('Screening not found');
     }
-    
+
     res.status(200).send({ message: 'Screening updated successfully' });
   } catch (err) {
     console.error('PUT /screenings/:id error:', err);
     res.status(500).send('Error updating screening');
   }
 });
+
 
 // GET /screenings/options - For dropdowns: { value: screeningID, label: "ID - Movie Title @ Start Time" }
 router.get('/options', async (req, res) => {
