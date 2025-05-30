@@ -50,19 +50,19 @@ router.get('/:id', async (req, res) => {
 router.post('/', async (req, res) => {
   try {
     const { title, director, releaseYear, genre, runtime, rating } = req.body;
-    
+
     if (!title) {
       return res.status(400).send('Missing required fields');
     }
-    
+
     const [result] = await db.query(
-      'INSERT INTO Movies (title, director, releaseYear, genre, runtime, rating) VALUES (?, ?, ?, ?, ?, ?)',
+      'CALL sp_AddMovie(?, ?, ?, ?, ?, ?)',
       [title, director, releaseYear, genre, runtime, rating]
     );
-    
+
     res.status(201).send({ 
       message: 'Movie created successfully',
-      id: result.insertId 
+      id: result.insertId || null
     });
   } catch (err) {
     console.error('POST /movies error:', err);
@@ -74,20 +74,22 @@ router.post('/', async (req, res) => {
 router.put('/:id', async (req, res) => {
   try {
     const { title, director, releaseYear, genre, runtime, rating } = req.body;
-    
+
     if (!title) {
       return res.status(400).send('Missing required fields');
     }
-    
-    const [result] = await db.query(
-      'UPDATE Movies SET title = ?, director = ?, releaseYear = ?, genre = ?, runtime = ?, rating = ? WHERE movieID = ?',
-      [title, director, releaseYear, genre, runtime, rating, req.params.id]
+
+    const [rows] = await db.query(
+      'CALL sp_UpdateMovieByID(?, ?, ?, ?, ?, ?, ?)',
+      [req.params.id, title, director, releaseYear, genre, runtime, rating]
     );
-    
-    if (result.affectedRows === 0) {
+
+    const affected = rows[0][0]?.affectedRows;
+
+    if (affected === 0) {
       return res.status(404).send('Movie not found');
     }
-    
+
     res.status(200).send({ message: 'Movie updated successfully' });
   } catch (err) {
     console.error('PUT /movies/:id error:', err);
@@ -98,12 +100,17 @@ router.put('/:id', async (req, res) => {
 // DELETE /movies/:id
 router.delete('/:id', async (req, res) => {
   try {
-    const [result] = await db.query('DELETE FROM Movies WHERE movieID = ?', [req.params.id]);
-    
-    if (result.affectedRows === 0) {
+    const [rows] = await db.query(
+      'CALL sp_DeleteMovieByID(?)',
+      [req.params.id]
+    );
+
+    const affected = rows[0][0]?.affectedRows;
+
+    if (affected === 0) {
       return res.status(404).send('Movie not found');
     }
-    
+
     res.status(200).send({ message: 'Movie deleted successfully' });
   } catch (err) {
     console.error('DELETE /movies/:id error:', err);

@@ -7,9 +7,10 @@ function Home() {
     <div className="page-cont">
       <h1>CS 340 – Oregon State University DBMS Project</h1>
       <p className="subtitle">
-        Created by <a href="https://github.com/J-Rodriguez10" className="highlight-name" target="_blank" rel="noopener noreferrer">Jesus Rodriguez</a> and <a href="https://github.com/julio-jimenez" className="highlight-name" target="_blank" rel="noopener noreferrer">Julio Jimenez</a> to demonstrate core concepts of relational databases and SQL.
+        Created by <a href="https://github.com/J-Rodriguez10" className="highlight-name" target="_blank" rel="noopener noreferrer">Jesus Rodriguez</a> and <a href="<PLACE YOUR GITHUB URL HERE>" className="highlight-name" target="_blank" rel="noopener noreferrer">Julio Jimenez</a> to demonstrate core concepts of relational databases and SQL.
       </p>
 
+      {/* 2 x 2 Grid container: */}
       <div className="home-card-grid">
         <HomeCard
           title="ER Diagram"

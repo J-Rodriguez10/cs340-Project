@@ -30,19 +30,19 @@ router.get('/', async (req, res) => {
 router.post('/', async (req, res) => {
   try {
     const { screeningID, customerID, purchaseDate, price } = req.body;
-    
+
     if (!screeningID || !customerID || !purchaseDate || !price) {
       return res.status(400).send('Missing required fields');
     }
-    
+
     const [result] = await db.query(
-      'INSERT INTO Tickets (screeningID, customerID, purchaseDate, price) VALUES (?, ?, ?, ?)',
+      'CALL sp_AddTicket(?, ?, ?, ?)',
       [screeningID, customerID, purchaseDate, price]
     );
-    
-    res.status(201).send({ 
+
+    res.status(201).send({
       message: 'Ticket created successfully',
-      id: result.insertId 
+      id: result.insertId || null
     });
   } catch (err) {
     console.error('POST /tickets error:', err);
@@ -50,15 +50,21 @@ router.post('/', async (req, res) => {
   }
 });
 
+
 // DELETE /tickets/:id
 router.delete('/:id', async (req, res) => {
   try {
-    const [result] = await db.query('DELETE FROM Tickets WHERE ticketID = ?', [req.params.id]);
-    
-    if (result.affectedRows === 0) {
+    const [rows] = await db.query(
+      'CALL sp_DeleteTicketByID(?)',
+      [req.params.id]
+    );
+
+    const affected = rows[0][0]?.affectedRows;
+
+    if (affected === 0) {
       return res.status(404).send('Ticket not found');
     }
-    
+
     res.status(200).send({ message: 'Ticket deleted successfully' });
   } catch (err) {
     console.error('DELETE /tickets/:id error:', err);
@@ -66,29 +72,33 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
+
 // PUT /tickets/:id
 router.put('/:id', async (req, res) => {
   try {
     const { screeningID, customerID, purchaseDate, price } = req.body;
-    
+
     if (!screeningID || !customerID || !purchaseDate || !price) {
       return res.status(400).send('Missing required fields');
     }
-    
-    const [result] = await db.query(
-      'UPDATE Tickets SET screeningID = ?, customerID = ?, purchaseDate = ?, price = ? WHERE ticketID = ?',
-      [screeningID, customerID, purchaseDate, price, req.params.id]
+
+    const [rows] = await db.query(
+      'CALL sp_UpdateTicketByID(?, ?, ?, ?, ?)',
+      [req.params.id, screeningID, customerID, purchaseDate, price]
     );
-    
-    if (result.affectedRows === 0) {
+
+    const affected = rows[0][0]?.affectedRows;
+
+    if (affected === 0) {
       return res.status(404).send('Ticket not found');
     }
-    
+
     res.status(200).send({ message: 'Ticket updated successfully' });
   } catch (err) {
     console.error('PUT /tickets/:id error:', err);
     res.status(500).send('Error updating ticket');
   }
 });
+
 
 module.exports = router;

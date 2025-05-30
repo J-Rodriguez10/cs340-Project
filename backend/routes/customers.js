@@ -23,7 +23,7 @@ router.post('/', async (req, res) => {
     }
     
     const [result] = await db.query(
-      'INSERT INTO Customers (firstName, lastName, email, phoneNumber) VALUES (?, ?, ?, ?)',
+      'CALL sp_AddCustomer(?, ?, ?, ?)', 
       [firstName, lastName, email, phoneNumber]
     );
     
@@ -40,12 +40,17 @@ router.post('/', async (req, res) => {
 // DELETE /customers/:id
 router.delete('/:id', async (req, res) => {
   try {
-    const [result] = await db.query('DELETE FROM Customers WHERE customerID = ?', [req.params.id]);
-    
-    if (result.affectedRows === 0) {
+    const [rows] = await db.query(
+      'CALL sp_DeleteCustomerByID(?)', 
+      [req.params.id]
+    );
+
+    const affected = rows[0][0]?.affectedRows;
+
+    if (affected === 0) {
       return res.status(404).send('Customer not found');
     }
-    
+
     res.status(200).send({ message: 'Customer deleted successfully' });
   } catch (err) {
     console.error('DELETE /customers/:id error:', err);
@@ -57,26 +62,29 @@ router.delete('/:id', async (req, res) => {
 router.put('/:id', async (req, res) => {
   try {
     const { firstName, lastName, email, phoneNumber } = req.body;
-    
+
     if (!firstName || !lastName || !email) {
       return res.status(400).send('Missing required fields');
     }
-    
-    const [result] = await db.query(
-      'UPDATE Customers SET firstName = ?, lastName = ?, email = ?, phoneNumber = ? WHERE customerID = ?',
-      [firstName, lastName, email, phoneNumber, req.params.id]
+
+    const [rows] = await db.query(
+      'CALL sp_UpdateCustomerByID(?, ?, ?, ?, ?)', 
+      [req.params.id, firstName, lastName, email, phoneNumber]
     );
-    
-    if (result.affectedRows === 0) {
+
+    const affected = rows[0][0]?.affectedRows;
+
+    if (affected === 0) {
       return res.status(404).send('Customer not found');
     }
-    
+
     res.status(200).send({ message: 'Customer updated successfully' });
   } catch (err) {
     console.error('PUT /customers/:id error:', err);
     res.status(500).send('Error updating customer');
   }
 });
+
 
 // GET /customers/options - For dropdowns: { value: customerID, label: "ID - First Last" }
 router.get('/options', async (req, res) => {

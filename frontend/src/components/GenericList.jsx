@@ -7,6 +7,7 @@ import DateTimePicker from './DateTimePicker'; // Import the DateTimePicker comp
 import WideButton from './WideButton';
 import { PlusSignIcon } from '../icons/MiscellaneousIcons';
 import { PencilIcon, TrashbinIcon } from '../icons/GenericListIcons';
+import GenericListHeader from './helper-genericlist/GenericListHeader';
 
 /**
  * GenericList.jsx
@@ -53,7 +54,8 @@ export default function GenericList({ endpoint, title }) {
   const idField = getIdField();
 
    // List of fields treated as foreign keys
-   const foreignKeyFields = ['movieID', 'employeeID', 'customerID', 'employeeRoleID', 'screeningID'];
+  const foreignKeyFields = ['movieID', 'employeeID', 'customerID', 'roleID', 'screeningID'];
+
 
    // Helper function to check if a column is a foreign key
    const isForeignKey = (column) => foreignKeyFields.includes(column);
@@ -106,18 +108,20 @@ export default function GenericList({ endpoint, title }) {
     try {
       const promises = foreignKeyFields.map(async (field) => {
         try {
-          // Build the URL and fetch options for each FK field option
-          const response = await fetch(`${API_BASE_URL}/${field.replace('ID', '')}s/options`);
+          // ✅ Special case for roleID → maps to /employeeRoles/options
+          let path = `${field.replace('ID', '')}s`;
+          if (field === 'roleID') path = 'employeeRoles';
+
+          const response = await fetch(`${API_BASE_URL}/${path}/options`);
           if (!response.ok) throw new Error(`HTTP ${response.status}`);
           const data = await response.json();
-          return [field, data]; // Return the key-value pair: [fieldName, options[]]
+          return [field, data]; // Return key-value pair: [fieldName, options[]]
         } catch (err) {
           console.error(`Failed to fetch options for ${field}:`, err);
-          return [field, []]; // Resort to a empty array on error
+          return [field, []];
         }
       });
 
-      // Convert array of key-value pairs into an object for easier access
       const results = await Promise.all(promises);
       const mapped = Object.fromEntries(results);
       setDropdownOptions(mapped);
@@ -371,11 +375,7 @@ export default function GenericList({ endpoint, title }) {
 
   return (
     <div className="generic-list-cont">
-      
-
       <div className="generic-list-top-section">
-
-
         {/* Create Form */}
         {!showCreateForm ? (
           <WideButton icon={PlusSignIcon} onClick={toggleCreateForm}>Create New {title.slice(0, -1)}</WideButton>
@@ -398,7 +398,7 @@ export default function GenericList({ endpoint, title }) {
       {/* Entity-Cont = Entity-header + Entity-Table */}
       <div className="entity-cont">
         {/* Entity Header */}
-        <h2 className="entity-header">{title}</h2>
+        <GenericListHeader title={title}/>
 
         {/* Entity Table */}
         {data.length > 0 && (
