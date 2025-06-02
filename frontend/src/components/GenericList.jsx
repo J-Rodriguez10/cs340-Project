@@ -480,7 +480,7 @@ export default function GenericList({ endpoint, title }) {
                       <td>
                         <button onClick={handleSave}>Save</button>
                         <button onClick={handleCancel}>Cancel</button>
-                        {/* Show movie runtime info for screenings - datetime picker enhancement */}
+                        {/* Show movie runtime info for screenings - datetime picker */}
                         {endpoint === '/screenings' && movieDetails.runtime && (
                           <div style={{ fontSize: '11px', color: '#4a90e2', marginTop: '4px' }}>
                             Runtime: {Math.floor(movieDetails.runtime / 60)}h {movieDetails.runtime % 60}m

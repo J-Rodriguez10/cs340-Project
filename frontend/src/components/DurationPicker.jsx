@@ -75,7 +75,7 @@ const DurationPicker = ({
           style={inputStyle}
           placeholder="0"
         />
-        <span style={{ fontSize: '14px', color: '#666' }}>h</span>
+        <span style={{ fontSize: '14px', color: '#4a90e2' }}>h</span>
       </div>
       
       <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
@@ -89,10 +89,10 @@ const DurationPicker = ({
           style={inputStyle}
           placeholder="0"
         />
-        <span style={{ fontSize: '14px', color: '#666' }}>m</span>
+        <span style={{ fontSize: '14px', color: '#4a90e2' }}>m</span>
       </div>
       
-      <span style={{ fontSize: '12px', color: '#999', marginLeft: '8px' }}>
+      <span style={{ fontSize: '12px', color: '#4a90e2', marginLeft: '8px' }}>
         ({value || 0} minutes total)
       </span>
     </div>
