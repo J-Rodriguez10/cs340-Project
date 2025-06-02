@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { formatColumnName } from "../../helper/formattingHelper";
 import { API_BASE_URL } from "../../config";
 import DateTimePicker from "../DateTimePicker";
+import DurationPicker from "../DurationPicker";
 
 // Citation for the following code:
 // Date: 2025-05-18
@@ -30,6 +31,22 @@ export default function GenericCreateForm({
   // Use the provided dropdownOptions prop if available, otherwise use local state
   const options = dropdownOptions || localDropdownOptions;
 
+  // Helper function to convert minutes to HH:MM format
+  const minutesToTimeString = (minutes) => {
+    if (!minutes || isNaN(minutes)) return '';
+    const hours = Math.floor(minutes / 60);
+    const mins = minutes % 60;
+    return `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}`;
+  };
+
+  // Helper function to convert HH:MM format to minutes
+  const timeStringToMinutes = (timeString) => {
+    if (!timeString) return '';
+    const [hours, minutes] = timeString.split(':').map(Number);
+    if (isNaN(hours) || isNaN(minutes)) return '';
+    return (hours * 60) + minutes;
+  };
+
   // Fetch movie details when movieID changes (for screenings) - datetime picker enhancement
   useEffect(() => {
     if (endpoint === '/screenings' && newFormData.movieID) {
@@ -53,12 +70,23 @@ export default function GenericCreateForm({
   const fetchMovieDetails = async (movieID) => {
     try {
       const response = await fetch(`${API_BASE_URL}/movies/${movieID}`);
-      if (response.ok) {
-        const movie = await response.json();
+      if (!response.ok) {
+        throw new Error(`Failed to fetch movie details: ${response.status}`);
+      }
+      const movie = await response.json();
+      
+      // Validate that movie has runtime for calculations
+      if (!movie.runtime || isNaN(movie.runtime)) {
+        console.warn('Movie runtime is missing or invalid');
+        setMovieDetails({ ...movie, runtime: null });
+      } else {
         setMovieDetails(movie);
       }
     } catch (err) {
       console.error('Failed to fetch movie details:', err);
+      // Provide user feedback
+      alert('Warning: Could not the load movie details for runtime calculation');
+      setMovieDetails({});
     }
   };
 
@@ -74,20 +102,23 @@ export default function GenericCreateForm({
   const handleEnhancedInputChange = (e) => {
     const { name, value } = e.target;
     
+    // Create updated form data
+    const updatedFormData = {
+      ...newFormData,
+      [name]: value
+    };
+
     // Call the original handler first
     handleCreateInputChange(e);
 
     // Special handling for screenings - datetime picker enhancement
-    if (endpoint === '/screenings') {
-      if (name === 'startTime' && movieDetails.runtime) {
-        const endTime = calculateEndTime(value, movieDetails.runtime);
-        if (endTime) {
-          setTimeout(() => {
-            handleCreateInputChange({
-              target: { name: 'endTime', value: endTime }
-            });
-          }, 50);
-        }
+    if (endpoint === '/screenings' && name === 'startTime' && movieDetails.runtime) {
+      const endTime = calculateEndTime(value, movieDetails.runtime);
+      if (endTime) {
+        // Immediately update end time
+        handleCreateInputChange({
+          target: { name: 'endTime', value: endTime }
+        });
       }
     }
   };
@@ -114,8 +145,14 @@ export default function GenericCreateForm({
     const fetchDropdowns = async () => {
       const promises = (foreignKeyFields || []).map(async (field) => {
         try {
-          // Build URL and fetch options for each FK field
-          const response = await fetch(`${API_BASE_URL}/${field.replace('ID', '')}s/options`);
+          // Special case for roleID → maps to /employeeRoles/options
+          let path = `${field.replace('ID', '')}s`;
+          if (field === 'roleID') path = 'employeeRoles';
+          
+          const response = await fetch(`${API_BASE_URL}/${path}/options`);
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+          }
           const data = await response.json();
           return [field, data]; // Return key-value pair: [fieldName, options[]]
         } catch (err) {
@@ -138,7 +175,7 @@ export default function GenericCreateForm({
 
   // For backward compatibility, if isForeignKey isn't provided, use a local version
   const checkIsForeignKey = isForeignKey || 
-    ((column) => (foreignKeyFields || ['movieID', 'employeeID', 'customerID', 'employeeRoleID', 'screeningID']).includes(column));
+    ((column) => (foreignKeyFields || ['movieID', 'employeeID', 'customerID', 'roleID', 'screeningID']).includes(column));
 
   // Determine if a field should use DateTimePicker - datetime picker enhancement
   const isDateTimeField = (column) => {
@@ -146,7 +183,7 @@ export default function GenericCreateForm({
     return dateTimeFields.includes(column);
   };
 
-  // Render appropriate input field based on type - enhanced for datetime picker
+  // Render appropriate input field based on type - for datetime picker and runtime
   const renderInputField = (col) => {
     if (checkIsForeignKey(col)) {
       // Render dropdown for foreign keys
@@ -177,6 +214,17 @@ export default function GenericCreateForm({
           style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }}
         />
       );
+    } else if (col === 'runtime') {
+      // Special handling for runtime - use duration picker
+      return (
+        <DurationPicker
+          name={col}
+          value={newFormData[col] || ""}
+          onChange={handleEnhancedInputChange}
+          required
+          style={{ width: '100%' }}
+        />
+      );
     } else {
       // Render regular text input
       return (
@@ -205,7 +253,7 @@ export default function GenericCreateForm({
               {/* Show additional info for auto-calculated fields - datetime picker*/}
               {endpoint === '/screenings' && col === 'endTime' && (
                 <span style={{ fontSize: '12px', color: '#4a90e2', fontStyle: 'italic' }}>
-                  {' '}(Auto-calculated based on start time and movie runtime)
+                  {' '}(Auto-calculated based on start time and movie runtime - No need to fill)
                 </span>
               )}
               {endpoint === '/tickets' && col === 'purchaseDate' && (
@@ -215,7 +263,7 @@ export default function GenericCreateForm({
               )}
             </label>
 
-            {/* Render <select> if column is a foreign key, <DateTimePicker> for datetime fields, otherwise <input> - datetime picker */}
+            {/* Render <select> if column is a foreign key, <DateTimePicker> for datetime fields, <time> for runtime, otherwise <input> */}
             {renderInputField(col)}
           </div>
         ))}

@@ -3,7 +3,8 @@ import { useState, useEffect } from 'react';
 import { API_BASE_URL } from '../config';
 import { formatColumnName, formatDateTime } from '../helper/formattingHelper';
 import GenericCreateForm from './helper-genericlist/GenericCreateForm';
-import DateTimePicker from './DateTimePicker'; // Import the DateTimePicker component
+import DateTimePicker from './DateTimePicker';
+import DurationPicker from './DurationPicker';
 import WideButton from './WideButton';
 import { PlusSignIcon } from '../icons/MiscellaneousIcons';
 import { PencilIcon, TrashbinIcon } from '../icons/GenericListIcons';
@@ -56,7 +57,6 @@ export default function GenericList({ endpoint, title }) {
    // List of fields treated as foreign keys
   const foreignKeyFields = ['movieID', 'employeeID', 'customerID', 'roleID', 'screeningID'];
 
-
    // Helper function to check if a column is a foreign key
    const isForeignKey = (column) => foreignKeyFields.includes(column);
 
@@ -66,16 +66,66 @@ export default function GenericList({ endpoint, title }) {
     return dateTimeFields.includes(column);
   };
 
+  // Helper function to convert minutes to HH:MM format
+  const minutesToTimeString = (minutes) => {
+    if (!minutes || isNaN(minutes)) return '';
+    const hours = Math.floor(minutes / 60);
+    const mins = minutes % 60;
+    return `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}`;
+  };
+
+  // Helper function to convert HH:MM format to minutes
+  const timeStringToMinutes = (timeString) => {
+    if (!timeString) return '';
+    const [hours, minutes] = timeString.split(':').map(Number);
+    if (isNaN(hours) || isNaN(minutes)) return '';
+    return (hours * 60) + minutes;
+  };
+
+  // Helper function to extract ID from display value
+  const extractIdFromDisplayValue = (displayValue, separator = ' - ') => {
+    if (!displayValue || typeof displayValue !== 'string') {
+      return displayValue; // Return as-is if not a string
+    }
+    
+    const trimmed = displayValue.trim();
+    if (!trimmed.includes(separator)) {
+      return displayValue; // No separator found, assume it's already just the ID
+    }
+    
+    const parts = trimmed.split(separator);
+    const idPart = parts[0].trim();
+    
+    // Validate extracted ID
+    if (idPart && !isNaN(Number(idPart)) && Number.isInteger(Number(idPart)) && Number(idPart) > 0) {
+      return idPart;
+    }
+    
+    console.warn(`Could not extract valid ID from display value: ${displayValue}`);
+    return ''; // Return empty string for invalid cases
+  };
+
   // Fetch movie details for screenings - datetime picker
   const fetchMovieDetails = async (movieID) => {
     try {
       const response = await fetch(`${API_BASE_URL}/movies/${movieID}`);
-      if (response.ok) {
-        const movie = await response.json();
+      if (!response.ok) {
+        throw new Error(`Failed to fetch movie details: ${response.status}`);
+      }
+      const movie = await response.json();
+      
+      // Validate that movie has runtime for calculations
+      if (!movie.runtime || isNaN(movie.runtime)) {
+        console.warn('Movie runtime is missing or invalid');
+        setMovieDetails({ ...movie, runtime: null });
+      } else {
         setMovieDetails(movie);
       }
     } catch (err) {
       console.error('Failed to fetch movie details:', err);
+      // Provide user feedback
+      alert('Warning: Could not load the movie details for runtime calculation');
+      setMovieDetails({});
     }
   };
 
@@ -108,7 +158,7 @@ export default function GenericList({ endpoint, title }) {
     try {
       const promises = foreignKeyFields.map(async (field) => {
         try {
-          // ✅ Special case for roleID → maps to /employeeRoles/options
+          // Special case for roleID → maps to /employeeRoles/options
           let path = `${field.replace('ID', '')}s`;
           if (field === 'roleID') path = 'employeeRoles';
 
@@ -174,14 +224,10 @@ export default function GenericList({ endpoint, title }) {
     const formData = {...row};
     
     // For foreign key fields that might be concatenated strings like "1 - Movie Title",
-    // Extract just the ID part for the form data
+    // Extract just the ID part for the form data using robust extraction
     Object.keys(formData).forEach(key => {
-      if (isForeignKey(key) && typeof formData[key] === 'string' && formData[key].includes(' - ')) {
-        // Extract just the ID part (before the " - ")
-        const idPart = formData[key].split(' - ')[0];
-        if (!isNaN(Number(idPart))) {
-          formData[key] = idPart;
-        }
+      if (isForeignKey(key)) {
+        formData[key] = extractIdFromDisplayValue(formData[key]);
       }
     });
 
@@ -317,7 +363,7 @@ export default function GenericList({ endpoint, title }) {
     return value;
   };
 
-  // Render input field based on type (text input, dropdown, or datetime picker)
+  // Render input field based on type (text input, dropdown, datetime picker, or time picker for runtime)
   const renderEditInputField = (col, value) => {
     if (isForeignKey(col)) {
       // Render dropdown for foreign keys
@@ -345,6 +391,17 @@ export default function GenericList({ endpoint, title }) {
           value={value || ""}
           onChange={handleEditInputChange}
           style={{ width: '100%', padding: '4px', borderRadius: '3px', border: '1px solid #ccc' }}
+        />
+      );
+    } else if (col === 'runtime') {
+      // Special handling for runtime - use duration picker for editing
+      return (
+        <DurationPicker
+          name={col}
+          value={value || ""}
+          onChange={handleEditInputChange}
+          disabled={col === idField}
+          style={{ width: '100%' }}
         />
       );
     } else {
