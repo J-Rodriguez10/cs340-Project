@@ -10,7 +10,6 @@
   /* margin-top: 1rem; */
 }
 
-
 .toolbar-left {
   display:flex;
   align-items: center;
@@ -19,7 +18,9 @@
 }
 
 .toolbar-right {
-  /* border: 1px solid orange; */
+  display: flex;
+  gap: 2rem;
+  align-items: center;
 }
 
 .reset-button:hover {

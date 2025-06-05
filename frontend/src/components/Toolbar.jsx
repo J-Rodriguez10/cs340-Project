@@ -1,6 +1,7 @@
 import { useLocation } from "react-router-dom";
 import { SideMenuIcon } from "../icons/ToolBarIcons";
 import ResetButton from "../components/ResetButton";
+import GitHubButton from "./GitHubButton";
 
 function Toolbar({ toggleNavbar }) {
 
@@ -8,7 +9,7 @@ function Toolbar({ toggleNavbar }) {
   const path = location.pathname === "/" ? "dashboard" : location.pathname.slice(1);
 
   return <div className="toolbar">
-    
+    {/* Right section of the left bar */}
     <div className="toolbar-left">
       <button className="navbar-toggle-btn" onClick={toggleNavbar}>
         {SideMenuIcon}
@@ -19,8 +20,12 @@ function Toolbar({ toggleNavbar }) {
       </h1>
     </div>
 
-    {/* Databse Rest Button */}
+    {/* Right section of the tool bar */}
     <div className="toolbar-right">
+      {/* GitHub Link Button */}
+      <GitHubButton />
+
+      {/* Database Reset Button */}
       <ResetButton />
     </div>
   </div>;

@@ -89,3 +89,18 @@ Wide Button
   justify-content: center;
   pointer-events: none;
 }
+
+/* 
+===========================
+GitHub Button
+===========================
+*/
+.github-btn {
+  color: white;
+  transition: color 0.3s ease;
+}
+
+.github-btn:hover {
+  color: #57fb7d;
+}
+
