@@ -2,6 +2,14 @@ const express = require('express');
 const db = require('../database/db-connector');
 const router = express.Router();
 
+/**
+tickets.js, GenericList.jsx
+* Date: June 8, 2025
+Prompts used:
+* "Help me reformat the table to show the purchase date as a date only, instead of a date and time."
+ AI Source: https://claude.ai/new
+*/
+
 // GET /tickets
 router.get('/', async (req, res) => {
   try {
