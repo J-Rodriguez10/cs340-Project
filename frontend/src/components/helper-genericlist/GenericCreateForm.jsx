@@ -31,22 +31,6 @@ export default function GenericCreateForm({
   // Use the provided dropdownOptions prop if available, otherwise use local state
   const options = dropdownOptions || localDropdownOptions;
 
-  // Helper function to convert minutes to HH:MM format
-  const minutesToTimeString = (minutes) => {
-    if (!minutes || isNaN(minutes)) return '';
-    const hours = Math.floor(minutes / 60);
-    const mins = minutes % 60;
-    return `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}`;
-  };
-
-  // Helper function to convert HH:MM format to minutes
-  const timeStringToMinutes = (timeString) => {
-    if (!timeString) return '';
-    const [hours, minutes] = timeString.split(':').map(Number);
-    if (isNaN(hours) || isNaN(minutes)) return '';
-    return (hours * 60) + minutes;
-  };
-
   // Fetch movie details when movieID changes (for screenings) - datetime picker enhancement
   useEffect(() => {
     if (endpoint === '/screenings' && newFormData.movieID) {
