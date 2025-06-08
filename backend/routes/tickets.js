@@ -29,15 +29,18 @@ router.get('/', async (req, res) => {
 // POST /tickets
 router.post('/', async (req, res) => {
   try {
-    const { screeningID, customerID, purchaseDate, price } = req.body;
+    const { screeningID, customerID, price } = req.body;
 
-    if (!screeningID || !customerID || !purchaseDate || !price) {
+    if (!screeningID || !customerID || !price) {
       return res.status(400).send('Missing required fields');
     }
 
+    // Automatically sets the purchaseDate to current date/time
+    const currentDateTime = new Date().toISOString().slice(0, 19).replace('T', ' ');
+    
     const [result] = await db.query(
       'CALL sp_AddTicket(?, ?, ?, ?)',
-      [screeningID, customerID, purchaseDate, price]
+      [screeningID, customerID, currentDateTime, price]
     );
 
     res.status(201).send({
@@ -82,9 +85,16 @@ router.put('/:id', async (req, res) => {
       return res.status(400).send('Missing required fields');
     }
 
+    // Allows for the editing/updating of purchaseDate
+    let finalDateTime = purchaseDate;
+    // Handle different datetime formats if needed
+    if (purchaseDate.includes('T') && !purchaseDate.includes(' ')) {
+      finalDateTime = purchaseDate.slice(0, 19).replace('T', ' ');
+    }
+
     const [rows] = await db.query(
       'CALL sp_UpdateTicketByID(?, ?, ?, ?, ?)',
-      [req.params.id, screeningID, customerID, purchaseDate, price]
+      [req.params.id, screeningID, customerID, finalDateTime, price]
     );
 
     const affected = rows[0][0]?.affectedRows;

@@ -332,6 +332,20 @@ export default function GenericList({ endpoint, title }) {
       return '';
     }
     
+    // Special case for purchaseDate - show only the date, not time
+    if (column === 'purchaseDate') {
+      try {
+        const date = new Date(value);
+        return date.toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'numeric',
+          day: 'numeric'
+        });
+      } catch (e) {
+        return value; // fallback to original value if parsing fails
+      }
+    }
+    
     // Special case for movie runtime since this is not a timestamp
     if (column === 'runtime') {
       // Convert minutes to hours and minutes format
@@ -344,10 +358,10 @@ export default function GenericList({ endpoint, title }) {
       }
     }
 
-    // Format date/time fields
+    // Format date/time fields (for startTime, endTime, etc.)
     if (
       column.toLowerCase().includes('time') || 
-      column.toLowerCase().includes('date') ||
+      (column.toLowerCase().includes('date') && column !== 'purchaseDate') ||
       column !== 'runtime' &&  // Excludes runtime
       (typeof value === 'string' && 
         (value.includes('T') && value.includes('Z') && value.includes('-')))
