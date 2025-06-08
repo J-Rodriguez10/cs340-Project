@@ -26,6 +26,12 @@ Prompts used:
  AI Source: https://claude.ai/new
 */
 
+// Converts local time string to ISO UTC string
+const toUTCISOString = (localDateTimeString) => {
+  const local = new Date(localDateTimeString);
+  return new Date(local.getTime() - local.getTimezoneOffset() * 60000).toISOString();
+};
+
 export default function GenericList({ endpoint, title }) {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -266,20 +272,26 @@ export default function GenericList({ endpoint, title }) {
     });
   };
 
-  // Saves the edited data
   const handleSave = async () => {
     try {
+      let payload = { ...editFormData };
+
+      // Step 3: Convert local times to UTC for screenings
+      if (endpoint === '/screenings') {
+        if (payload.startTime) payload.startTime = toUTCISOString(payload.startTime);
+        if (payload.endTime) payload.endTime = toUTCISOString(payload.endTime);
+      }
+
       const response = await fetch(`${API_BASE_URL}${endpoint}/${editingId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(editFormData)
+        body: JSON.stringify(payload)
       });
-      
+
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      
-      // Refreshes data and shows success or error message. 
+
       await fetchData();
       setEditingId(null);
       alert(`${title.slice(0, -1)} Updated Successfully`);
@@ -289,22 +301,29 @@ export default function GenericList({ endpoint, title }) {
     }
   };
 
-  // Creates a new entry
+  // Handles creating a new entry
   const handleCreate = async (e) => {
     e.preventDefault();
-    
+
     try {
+      let payload = { ...newFormData };
+
+      // Step 2: Convert local times to UTC ISO format before sending
+      if (endpoint === '/screenings') {
+        if (payload.startTime) payload.startTime = toUTCISOString(payload.startTime);
+        if (payload.endTime) payload.endTime = toUTCISOString(payload.endTime);
+      }
+
       const response = await fetch(`${API_BASE_URL}${endpoint}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(newFormData)
+        body: JSON.stringify(payload)
       });
-      
+
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      
-      // Refreshes data and shows success or error message.
+
       await fetchData();
       setNewFormData({});
       setShowCreateForm(false);

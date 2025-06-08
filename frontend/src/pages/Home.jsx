@@ -33,10 +33,10 @@ function Home() {
         />
 
         <HomeCard
-          title="DDL & DML Scripts"
+          title="DDL, DML, PL"
           description="SQL scripts that perform all data operations for the CinePictures system."
           imageSrc="/images/sql-preview.png"
-          imageAlt="DDL and DML Scripts preview"
+          imageAlt="DDL, DML and PL Scripts preview"
           variant="black"
           onDownloadClick={() => downloadFile("/files/cinepictures-sql-scripts.zip", "CinePictures_SQL_Scripts.zip")}
         />
