@@ -4,7 +4,7 @@
 
 ## 🎬 About the Project
 
-The idea behind **CinePictures** was to modernize a local movie company to replace its old-fashioned manual tracking system with a newer, robust database management system (DBMS). **CinePictures DBM**S consists of 6 entities, with the Tickets entity following a many-to-many relationship between Screenings and Customers.
+The idea behind **CinePictures** was to modernize a local movie company to replace its old-fashioned manual tracking system with a newer, robust database management system (DBMS). **CinePictures DBMS** consists of 6 entities, with the Tickets entity following a many-to-many relationship between Screenings and Customers.
 
 Developed as a portfolio project for CS340 at Oregon State University, this app demonstrates core database design principles, including a normalized schema, M:N relationships, foreign key constraints, and a custom user interface for administrative purposes.
 
