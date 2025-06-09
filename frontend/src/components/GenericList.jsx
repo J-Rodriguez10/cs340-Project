@@ -517,7 +517,7 @@ export default function GenericList({ endpoint, title }) {
             <thead>
               <tr>
                 {columns.map(col => <th key={col}>{formatColumnName(col)}</th>)}
-                <th>Add/Edit</th>
+                <th>Edit/Delete</th>
               </tr>
             </thead>
             <tbody>
