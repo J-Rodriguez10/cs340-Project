@@ -241,7 +241,7 @@ export default function GenericList({ endpoint, title }) {
   };
 
   // Handle form input changes when editing
-  const handleEditInputChange = (e) => {
+  const handleEditInputChange = async (e) => {
     const { name, value } = e.target;
     const newFormData = {
       ...editFormData,
@@ -255,8 +255,29 @@ export default function GenericList({ endpoint, title }) {
         const endTime = calculateEndTime(value, movieDetails.runtime);
         newFormData.endTime = endTime;
       } else if (name === 'movieID') {
-        // Clear end time when movie changes
-        newFormData.endTime = '';
+        // When movie changes, fetch new movie details and calculate the end time
+        try {
+          const movieDetailsResponse = await fetch(`${API_BASE_URL}/movies/${value}`);
+          if (movieDetailsResponse.ok) {
+            const newMovieDetails = await movieDetailsResponse.json();
+            setMovieDetails(newMovieDetails);
+            
+            // If there's a start time and the new movie has a runtime, calculate end time
+            if (newFormData.startTime && newMovieDetails.runtime) {
+              const endTime = calculateEndTime(newFormData.startTime, newMovieDetails.runtime);
+              newFormData.endTime = endTime;
+            } else {
+              // Clear the end time if we don't have enough information to calculate
+              newFormData.endTime = '';
+            }
+          } else {
+            // Clear the end time if we can't fetch the movie details
+            newFormData.endTime = '';
+          }
+        } catch (err) {
+          console.error('Failed to fetch movie details during edit:', err);
+          newFormData.endTime = '';
+        }
       }
     }
     
@@ -496,7 +517,7 @@ export default function GenericList({ endpoint, title }) {
             <thead>
               <tr>
                 {columns.map(col => <th key={col}>{formatColumnName(col)}</th>)}
-                <th>Add/Edit</th>
+                <th>Edit/Delete</th>
               </tr>
             </thead>
             <tbody>
