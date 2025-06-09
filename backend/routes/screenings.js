@@ -17,7 +17,7 @@ router.get('/', async (req, res) => {
       FROM Screenings s
       JOIN Movies m ON s.movieID = m.movieID
       JOIN Employees e ON s.employeeID = e.employeeID
-      ORDER BY s.startTime;
+      ORDER BY s.screeningID DESC;
     `);
     res.json(rows);
   } catch (err) {

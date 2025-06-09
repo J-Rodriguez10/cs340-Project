@@ -21,18 +21,14 @@ Prompts used:
  AI Source: https://claude.ai/new
 */
 
-// Format datetime and date fields
 export function formatDateTime(isoString) {
   if (!isoString) return "";
-  
+
   const date = new Date(isoString);
-  
-  // Check if date is valid
-  if (isNaN(date.getTime())) {
-    return isoString; // Return the original string if not a valid date
-  }
-  
+  if (isNaN(date.getTime())) return isoString;
+
   return date.toLocaleString('en-US', {
+    timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
     year: 'numeric',
     month: 'numeric',
     day: 'numeric',
@@ -42,23 +38,22 @@ export function formatDateTime(isoString) {
   });
 }
 
-// Format time only from datetime
+
+
 export function formatTime(isoString) {
   if (!isoString) return "";
-  
+
   const date = new Date(isoString);
-  
-  // Checks if the date is valid
-  if (isNaN(date.getTime())) {
-    return isoString; // Return the original string if not a valid date
-  }
-  
+  if (isNaN(date.getTime())) return isoString;
+
   return date.toLocaleString('en-US', {
+    timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone, 
     hour: 'numeric',
     minute: '2-digit',
     hour12: true
   });
 }
+
 
 // Format date only from datetime
 export function formatDate(isoString) {
