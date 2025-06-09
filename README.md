@@ -6,7 +6,7 @@
 
 **CinePictures DBMS** is a full-stack web application designed to modernize a local movie theater’s operations by replacing outdated manual systems with a modern, robust database management system. The project enables seamless management of customers, employees, screenings, and tickets using full CRUD functionality and stored procedures.
 
-Developed as a portfolio project for CS340 at Oregon State University, this app demonstrates core database design principles, including a normalized schema, M:N relationships, foreign key constraints, and a custom user interface for administrative interaction.
+Developed as a portfolio project for CS340 at Oregon State University, this app demonstrates core database design principles, including a normalized schema, M:N relationships, foreign key constraints, and a custom user interface for administrative purposes.
 
 **Created by Jesus Rodriguez and Julio Jimenez**
 
@@ -69,4 +69,4 @@ Developed as a portfolio project for CS340 at Oregon State University, this app 
 ## ✍️ Credit
 
 - Based on CS340 starter code with added modular routing, UI enhancements, and full PL/SQL integration  
-- AI tools were used to scaffold stored procedure templates and validate frontend logic. Manual oversight ensured schema consistency.
+- AI tools were used to build stored procedure templates and validate frontend logic. Manual oversight ensured schema consistency.
