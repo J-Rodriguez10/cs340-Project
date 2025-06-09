@@ -14,8 +14,11 @@ router.get('/', async (req, res) => {
         CONCAT(e.roleID, ' - ', r.roleName) AS roleID
       FROM Employees e
       JOIN EmployeeRoles r ON e.roleID = r.roleID
-      ORDER BY e.lastName;
+      ORDER BY e.employeeID DESC;
     `);
+
+    console.log("HERE", rows)
+
     res.json(rows);
   } catch (err) {
     console.error('GET /employees error:', err);
