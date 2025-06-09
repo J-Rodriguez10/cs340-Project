@@ -55,6 +55,12 @@ Leftover Styles From Exploration
 =================================
 */
 
+/* 
+  Citation for the following styles:
+  These are the remaining styles from the exploration that we decided to keep just in case we needed them.
+  From: https://canvas.oregonstate.edu/courses/1999601/pages/exploration-web-application-technology-2?module_item_id=25352948
+*/
+
 /* Forms */
 .cuForm {
   margin-left: 32px;
@@ -75,6 +81,12 @@ input, select {
 ===========================
 CSS Normalization
 ===========================
+*/
+
+/* 
+  Citation for the following normalization styles:
+  ChatGpt - for CSS starter code
+  Prompt: Can you give me basic normalization styles to reset default browser behavior and ensure visual consistency across elements?
 */
 
 *,

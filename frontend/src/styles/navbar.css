@@ -16,25 +16,14 @@
 
 
 /* Navigation bar */
-nav {
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 100vh;
-  width: 200px; /* Adjust as needed */
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  align-items: center;
-  background-color: var(--black-700); /* optional */
-  /* border-right: 1px solid red; */
-  z-index: 1000; /* ensure it's above scrollable content */
-  overflow-y: auto; /* scroll inside navbar if needed */
+/* 
+  Citation for the following navigation styles:
+  ChatGpt - To research CSS properties
+  Prompt: 1) Can you remind me how to make the navbar fixed at a certain position on
+  the left side of the screen with full height?
+  2) How does the position property work in CSS?
 
-  /* The top/down padding matches the same amount as the .outer-cont selector in <main>  */
-  padding: 1.5rem 0;
-}
-
+*/
 .navlink-anchor {
   width: 100%;
   /* border: 1px solid red; */

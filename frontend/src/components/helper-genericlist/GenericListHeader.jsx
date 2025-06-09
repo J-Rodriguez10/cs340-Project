@@ -1,3 +1,9 @@
+
+/* 
+  Citation for the following color mapping:
+  ChatGpt- Used for the color range.
+  Prompt: Select a range of vivid colors similar to the bright cyan we are using.
+*/
 function GenericListHeader({ title }) {
   const colorMap = {
     Customers: '#63e6e2',//Cyan 
@@ -8,7 +14,7 @@ function GenericListHeader({ title }) {
     Tickets: '#9eff6e',//Green
   };
 
-  // Default to Cyan if none of the titles match.
+  // If we dont have any valid color, sticking with the cyan
   const headerColor = colorMap[title] || 'var(--text-cyan)';
 
   return (

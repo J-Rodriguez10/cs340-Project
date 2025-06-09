@@ -1,19 +1,16 @@
 .toolbar {
   height: 40px;
   width: 100%;
-  /* background: red; */
   display: flex;
   justify-content: space-between;
   align-items: center;
-  /* border: 1px solid blue; */
   padding: 0 7px;
-  /* margin-top: 1rem; */
+
 }
 
 .toolbar-left {
   display:flex;
   align-items: center;
-  /* border: 1px solid green; */
   gap: 2.5rem;
 }
 
