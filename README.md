@@ -10,8 +10,6 @@ Developed as a portfolio project for CS340 at Oregon State University, this app 
 
 **Created by Jesus Rodriguez and Julio Jimenez**
 
-👉 Check out the [Live Demo](http://classwork.engr.oregonstate.edu:32829) - (We don't have it just yet)
-
 ---
 
 ## ⚙️ Built With
