@@ -40,7 +40,7 @@ function App() {
 
         <Toolbar toggleNavbar={() => setNavbarVisible(prev => !prev)}/>
 
-        {/*  */}
+  
         <Routes>
           <Route path="/" element={<Home backendURL={backendURL} />} />
           <Route path="/movies" element={<Movies />} />

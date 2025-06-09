@@ -2,9 +2,7 @@ import { API_BASE_URL } from "../config";
 
 function ResetButton() {
   const handleReset = async () => {
-    const confirmReset = window.confirm(
-      "HOLD ON: Are you sure you want to RESET the entire database?"
-    );
+    const confirmReset = window.confirm("HOLD ON: Are you sure you want to RESET the entire database?");
 
     if (!confirmReset) return;
 

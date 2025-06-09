@@ -1,5 +1,10 @@
-import React from 'react';
 
+/* 
+  Citation for the following DurationPicker component:
+  AI Source: https://claude.ai/new
+  Prompt: Can you help me build a custom input that lets users pick a duration using hours and minutes, but
+  stores it as total minutes?
+*/
 const DurationPicker = ({ 
   name, 
   value, 

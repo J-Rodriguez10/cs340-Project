@@ -86,6 +86,12 @@ router.put('/:id', async (req, res) => {
 });
 
 
+/* 
+  Citation for the following route handler:
+  ChatGpt - Adapted from the template it gave.
+  Prompt: Give me the template on how I would make an endpoint where the first value is
+  the ID followed by the value of that ID.
+*/
 // GET /customers/options - For dropdowns: { value: customerID, label: "ID - First Last" }
 router.get('/options', async (req, res) => {
   try {
