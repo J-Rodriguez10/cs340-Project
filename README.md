@@ -8,6 +8,8 @@ The idea behind **CinePictures** was to modernize a local movie company to repla
 
 Developed as a portfolio project for CS340 at Oregon State University, this app demonstrates core database design principles, including a normalized schema, M:N relationships, foreign key constraints, and a custom user interface for administrative purposes.
 
+👉👉👉 Live Video Walkthrough of the Project: https://www.youtube.com/watch?v=M3Umf--y2ac
+
 **Created by Jesus Rodriguez and Julio Jimenez**
 
 ---
